@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+    
+    <style>
+        body { background-color: #f8f9fa; font-family: 'Segoe UI', Tahoma, sans-serif; }
+        .card-header-custom { background-color: #0f4c81; color: white; border-radius: 10px 10px 0 0 !important; }
+        .table-custom th { background-color: #e2e8f0; color: #333; }
+        .row-year { background-color: #343a40; color: white; cursor: pointer; font-size: 1.1em; font-weight: bold; }
+        .row-customer { background-color: #dbeafe; font-weight: bold; border-bottom: 2px solid #fff; color: #1e3a8a; }
+        .row-audit-tag { background-color: #f1f5f9; cursor: pointer; color: #475569; font-size: 0.95em; border-left: 4px solid #0ea5e9; }
+        .row-audit-tag:hover { background-color: #e2e8f0; }
+        .row-document { background-color: #ffffff; }
+        .row-document:hover { background-color: #f8fafc; }
+        .file-link { background-color: #e0f2fe; color: #0369a1; padding: 4px 12px; border-radius: 20px; text-decoration: none; font-size: 0.9em; font-weight: 500;}
+        .file-link:hover { background-color: #bae6fd; }
+        .btn-upload-sm { font-size: 0.8em; padding: 2px 10px; border-radius: 15px; }
+
+        .menu-card { cursor: pointer; transition: transform 0.2s, box-shadow 0.2s; border-radius: 15px; border: 2px solid transparent; }
+        .menu-card:hover { transform: translateY(-5px); box-shadow: 0 10px 20px rgba(0,0,0,0.1) !important; border-color: #0f4c81; }
+        .icon-large { font-size: 3.5rem; margin-bottom: 15px; }
+        .menu-title { font-weight: 800; color: #333; }
+    </style>
+</head>
+<body class="p-4">
+
+    <!-- 🏠 Main Menu -->
+    <div id="mainMenuPage" class="container mt-5">
+        <div class="text-center mb-5">
+            <h1 class="fw-bold" style="color: #0f4c81;"><i class="bi bi-shield-check"></i>01 Custom Audit</h1>
+            <p class="text-muted">Select a system</p>
+        </div>
+        <div class="row g-4 justify-content-center">
+            <div class="col-md-4">
+                <div class="card shadow-sm menu-card h-100 text-center p-4" onclick="alert('🚧 Under Development')">
+                    <i class="bi bi-clipboard-data icon-large text-secondary"></i><h4 class="menu-title">01 Audit Schedule</h4>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card shadow-sm menu-card h-100 text-center p-4 border-primary" onclick="openAuditResultPage()">
+                    <i class="bi bi-folder-check icon-large text-primary"></i><h4 class="menu-title text-primary">02 Audit Result</h4>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card shadow-sm menu-card h-100 text-center p-4" onclick="alert('🚧 Under Development')">
+                    <i class="bi bi-box-seam icon-large text-secondary"></i><h4 class="menu-title">03 Audit Material</h4>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 📄 02 Audit Result -->
+    <div id="auditResultPage" style="display: none;">
+        <button class="btn btn-secondary mb-3 shadow-sm rounded-pill px-4" onclick="goBackToMenu()"><i class="bi bi-arrow-left-circle"></i> Back to Main Menu</button>
+        <div class="card shadow mb-4" style="border-radius: 10px;">
+            <div class="card-header card-header-custom d-flex justify-content-between align-items-center p-4">
+                <div><h3 class="mb-0 fw-bold"><i class="bi bi-folder-check"></i> 02 Audit Result</h3><small>Audit History Management System (Multi-Session Support)</small></div>
+                <div><button class="btn btn-warning fw-bold rounded-pill px-4" data-bs-toggle="modal" data-bs-target="#addYearModal"><i class="bi bi-calendar-plus"></i> Add New Audit</button></div>
+            </div>
+            <div class="card-body p-4">
+                <div class="table-responsive">
+                    <table class="table table-bordered align-middle">
+                        <thead class="table-custom text-center">
+                            <tr><th class="text-start" style="width: 40%;">Category / Document Type</th><th style="width: 30%;">Attached File</th><th style="width: 15%;">Last Edit</th><th style="width: 15%;">Action</th></tr>
+                        </thead>
+                        <tbody id="tableBody"><tr><td colspan="4" class="text-center py-5"> loading...</td></tr></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modals -->
+    <div class="modal fade" id="uploadModal" tabindex="-1">
+        <div class="modal-dialog"><div class="modal-content">
+            <div class="modal-header bg-primary text-white"><h5 class="modal-title"><i class="bi bi-cloud-upload"></i> Upload File</h5><button class="btn-close btn-close-white" data-bs-dismiss="modal"></button></div>
+            <div class="modal-body">
+                <input type="hidden" id="uploadYear"><input type="hidden" id="uploadCustomer"><input type="hidden" id="uploadAuditId"><input type="hidden" id="uploadDocType">
+                <input type="file" id="fileInput" class="form-control">
+            </div>
+            <div class="modal-footer"><button type="button" id="btnSaveFile" class="btn btn-primary w-100" onclick="uploadFile()">Save File</button></div>
+        </div></div>
+    </div>
+
+    <div class="modal fade" id="addCustomerModal" tabindex="-1">
+        <div class="modal-dialog modal-sm"><div class="modal-content">
+            <div class="modal-header bg-info"><h5 class="modal-title fw-bold"><i class="bi bi-plus-circle"></i> Start Assessment</h5><button class="btn-close" data-bs-dismiss="modal"></button></div>
+            <div class="modal-body">
+                <input type="hidden" id="targetYear"> 
+                <label class="form-label fw-bold">Custom Name</label>
+                <input type="text" id="newCustomerName" class="form-control" placeholder="e.g. HONDA">
+            </div>
+            <div class="modal-footer"><button type="button" id="btnSaveCustomer" class="btn btn-info w-100 fw-bold" onclick="saveNewCustomer()">Create Session</button></div>
+        </div></div>
+    </div>
+
+    <div class="modal fade" id="editCustomerModal" tabindex="-1">
+        <div class="modal-dialog modal-sm"><div class="modal-content">
+            <div class="modal-header bg-secondary text-white"><h5 class="modal-title fw-bold"><i class="bi bi-pencil"></i> Edit Customer Name</h5><button class="btn-close btn-close-white" data-bs-dismiss="modal"></button></div>
+            <div class="modal-body">
+                <input type="hidden" id="oldCustomerName"> <label class="form-label fw-bold">New Customer Name</label>
+                <input type="text" id="renameCustomerInput" class="form-control">
+            </div>
+            <div class="modal-footer"><button type="button" id="btnEditCustomer" class="btn btn-secondary w-100" onclick="saveEditCustomer()">Save</button></div>
+        </div></div>
+    </div>
+
+    <div class="modal fade" id="addYearModal" tabindex="-1">
+        <div class="modal-dialog modal-sm"><div class="modal-content">
+            <div class="modal-header bg-warning"><h5 class="modal-title fw-bold">Add Year</h5><button class="btn-close" data-bs-dismiss="modal"></button></div>
+            <div class="modal-body"><input type="number" id="newYearInput" class="form-control" placeholder="e.g. 2026"></div>
+            <div class="modal-footer"><button class="btn btn-warning w-100 fw-bold" onclick="addYearToTableUI()">Confirm</button></div>
+        </div></div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        function openAuditResultPage() { document.getElementById('mainMenuPage').style.display = 'none'; document.getElementById('auditResultPage').style.display = 'block'; loadTableData(); }
+        function goBackToMenu() { document.getElementById('auditResultPage').style.display = 'none'; document.getElementById('mainMenuPage').style.display = 'block'; }
+        function showLoading(msg) { document.getElementById('tableBody').innerHTML = `<tr><td colspan="4" class="text-center text-primary py-5">⏳ ${msg}...</td></tr>`; }
+
+        function loadTableData() { google.script.run.withSuccessHandler(renderTable).getAuditData(); }
+
+        function renderTable(data) {
+            var tbody = document.getElementById('tableBody');
+            if (!data || data.length === 0) { tbody.innerHTML = '<tr><td colspan="4" class="text-center text-muted py-5"><i class="bi bi-inbox fs-1"></i><br><strong>No data found</strong></td></tr>'; return; }
+
+            // 🌟 กลุ่มข้อมูลแบบใหม่: Year -> Customer -> Audit_ID -> Documents
+            var groupedData = {};
+            data.forEach(function(row) {
+                var ts=row[0], year=row[1], cust=row[2], aId=row[3], doc=row[4], fName=row[5], fLink=row[6], by=row[7];
+                if (!year || !cust || !aId) return; 
+
+                if (!groupedData[year]) groupedData[year] = {};
+                if (!groupedData[year][cust]) groupedData[year][cust] = {};
+                if (!groupedData[year][cust][aId]) groupedData[year][cust][aId] = { lastEdit: ts, docs: [] };
+                
+                groupedData[year][cust][aId].docs.push({ docType: doc, fileName: fName, fileLink: fLink, timestamp: ts, actionBy: by });
+            });
+
+            var html = '';
+            var years = Object.keys(groupedData).sort(function(a, b) { return parseInt(a) - parseInt(b); });
+            
+            years.forEach(function(year) {
+                var yNum = parseInt(year); var yBE = yNum < 2500 ? yNum + 543 : yNum; 
+                html += `<tr class="row-year" data-bs-toggle="collapse" data-bs-target=".group-${year}"><td colspan="3"><i class="bi bi-caret-down-fill"></i>  ${yNum < 2500 ? ` ${yNum} (พ.ศ. ${yBE})` : `พ.ศ. ${yBE}`}</td><td class="text-center"><button class="btn btn-sm btn-light shadow-sm fw-bold" onclick="event.stopPropagation(); openAddCustomerModal('${year}')">+ Add Customer / Start Assessment</button></td></tr>`;
+                
+                var customers = Object.keys(groupedData[year]).sort();
+                customers.forEach(function(cust) {
+                    var safeCustId = cust.replace(/[^a-zA-Z0-9]/g, ''); 
+                    html += `
+                    <tr class="collapse show group-${year} row-customer">
+                        <td colspan="4" class="ps-4">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <span><i class="bi bi-building"></i> Customer Name: ${cust}</span>
+                                <div><button class="btn btn-sm btn-outline-secondary bg-white me-1" onclick="openEditCustomerModal('${cust}')"><i class="bi bi-pencil-square"></i> edit</button></div>
+                            </div>
+                        </td>
+                    </tr>`;
+                    
+                    var auditIds = Object.keys(groupedData[year][cust]).sort().reverse(); // เอา ID ล่าสุดขึ้นก่อน
+                    auditIds.forEach(function(aId) {
+                        var safeTagId = aId.replace(/[^a-zA-Z0-9]/g, ''); 
+                        var lastActive = groupedData[year][cust][aId].lastEdit || 'Wait For Update...';
+                        
+                        // 🌟 แท็กประวัติ (คลิกเพื่อกาง 5 ไฟล์)
+                        html += `
+                        <tr class="collapse show group-${year} row-audit-tag" data-bs-toggle="collapse" data-bs-target=".doc-${safeTagId}">
+                            <td colspan="3" class="ps-5"><i class="bi bi-tag-fill text-info"></i> Session ID: <strong>${aId}</strong> <span class="ms-3 text-muted small">(Last Update: ${lastActive})</span></td>
+                            <td class="text-center"><button class="btn btn-sm btn-outline-danger" onclick="event.stopPropagation(); deleteSession('${aId}')"><i class="bi bi-trash"></i> Delete</button></td>
+                        </tr>`;
+
+                        groupedData[year][cust][aId].docs.forEach(function(doc) {
+                            var fileHtml = doc.fileName ? 
+                                `<td><a href="${doc.fileLink}" target="_blank" class="file-link"><i class="bi bi-check-circle-fill text-success"></i> ${doc.fileName}</a></td><td style="font-size: 0.85em;">${doc.timestamp}<br>${doc.actionBy}</td><td><a href="${doc.fileLink}" target="_blank" class="btn btn-outline-success btn-upload-sm"><i class="bi bi-eye"></i> เปิด</a><button class="btn btn-outline-danger btn-upload-sm ms-1" onclick="removeFile('${aId}', '${doc.docType}')"><i class="bi bi-x"></i></button></td>` : 
+                                `<td class="text-secondary small">- No files uploaded -</td><td>-</td><td><button class="btn btn-primary btn-upload-sm" onclick="openUploadModal('${year}', '${cust}', '${aId}', '${doc.docType}')"><i class="bi bi-upload"></i> Upload</button></td>`;
+                            
+                            html += `<tr class="collapse group-${year} doc-${safeTagId} row-document text-center"><td class="text-start ps-5 text-muted ms-4" style="padding-left: 5rem !important;">↳ ${doc.docType}</td>${fileHtml}</tr>`;
+                        });
+                    });
+                });
+            });
+            tbody.innerHTML = html;
+        }
+
+        // ==========================================
+        // ฟังก์ชันควบคุมปุ่ม
+        // ==========================================
+        function addYearToTableUI() {
+            var y = document.getElementById('newYearInput').value; if(y==="") return;
+            var num = parseInt(y); var be = num < 2500 ? num + 543 : num;
+            document.getElementById('tableBody').insertAdjacentHTML('beforeend', `<tr class="row-year" data-bs-toggle="collapse" data-bs-target=".group-${y}"><td colspan="3"><i class="bi bi-caret-down-fill"></i> ปี ${num < 2500 ? `ค.ศ. ${num} (พ.ศ. ${be})` : `พ.ศ. ${be}`}</td><td class="text-center"><button class="btn btn-sm btn-light fw-bold" onclick="event.stopPropagation(); openAddCustomerModal('${y}')">+ Add Customer</button></td></tr>`);
+            bootstrap.Modal.getInstance(document.getElementById('addYearModal')).hide();
+        }
+
+        function openAddCustomerModal(year) { document.getElementById('targetYear').value = year; new bootstrap.Modal(document.getElementById('addCustomerModal')).show(); }
+        
+        function saveNewCustomer() {
+            var y = document.getElementById('targetYear').value, c = document.getElementById('newCustomerName').value; if(c==="") return;
+            document.getElementById('btnSaveCustomer').innerHTML = 'loading...';
+            google.script.run.withSuccessHandler(msg => { bootstrap.Modal.getInstance(document.getElementById('addCustomerModal')).hide(); alert(msg); showLoading("Updating..."); setTimeout(loadTableData, 1500); }).createNewCustomerFolders(y, c); 
+        }
+
+        function openUploadModal(y, c, aId, type) {
+            document.getElementById('uploadYear').value = y; document.getElementById('uploadCustomer').value = c; document.getElementById('uploadAuditId').value = aId; document.getElementById('uploadDocType').value = type;
+            new bootstrap.Modal(document.getElementById('uploadModal')).show();
+        }
+
+        function uploadFile() {
+            var fInput = document.getElementById('fileInput'); if(fInput.files.length===0) return alert("Please select a file!");
+            var y = document.getElementById('uploadYear').value, c = document.getElementById('uploadCustomer').value, aId = document.getElementById('uploadAuditId').value, type = document.getElementById('uploadDocType').value;
+            var f = fInput.files[0], reader = new FileReader();
+            document.getElementById('btnSaveFile').innerHTML = 'loading...';
+            reader.onload = e => { google.script.run.withSuccessHandler(msg => { bootstrap.Modal.getInstance(document.getElementById('uploadModal')).hide(); alert(msg); showLoading("Link Updating..."); setTimeout(loadTableData, 2000); }).uploadFileToDrive(e.target.result, f.name, y, c, aId, type, "1cX4x5WnHrKUg0zNWHH-8qjQ3d1iCWbwQ"); };
+            reader.readAsDataURL(f);
+        }
+
+        function removeFile(aId, type) {
+            if(confirm("Remove this" + type + " file?")) { showLoading("Deleting..."); google.script.run.withSuccessHandler(msg => { setTimeout(loadTableData, 1500); }).removeFileFromSheet(aId, type); }
+        }
+
+        function openEditCustomerModal(c) { document.getElementById('oldCustomerName').value = c; document.getElementById('renameCustomerInput').value = c; new bootstrap.Modal(document.getElementById('editCustomerModal')).show(); }
+        
+        function saveEditCustomer() {
+            var oldC = document.getElementById('oldCustomerName').value, newC = document.getElementById('renameCustomerInput').value; if(newC===""||newC===oldC) return;
+            document.getElementById('btnEditCustomer').innerHTML = 'loading...';
+            google.script.run.withSuccessHandler(msg => { bootstrap.Modal.getInstance(document.getElementById('editCustomerModal')).hide(); alert(msg); showLoading("Updating..."); setTimeout(loadTableData, 1500); }).renameCustomerInSheet(oldC, newC);
+        }
+
+        function deleteSession(aId) {
+            if(confirm("⚠️ Delete assessment ID:  " + aId + "?")) { showLoading("Deleting..."); google.script.run.withSuccessHandler(msg => { setTimeout(loadTableData, 1500); }).deleteAuditSession(aId); }
+        }
+    </script>
+</body>
+</html>
