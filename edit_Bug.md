@@ -1,8 +1,8 @@
 แก้ไข 1
  ให้ปรับเพิ่มจาก session อันเดิมให้เพิ่มเวลาและชื่อนามสกุลจริงของลูกค้า(โดยชื่อนามสกุลจริงให้ลูกค้ากรอกเอง)
 
-แก้ไข 2
-ใน 1.Plant tour information
+แก้ไข 2 เมื่อกดแท็บ session ID จะแสดง 5 ตัวนี้ตามที่เราเขียนกันไป
+   1.Plant tour information
    2.Audit Time Table
    3.Audit Preparation material
    4.Audit Report (customer)
