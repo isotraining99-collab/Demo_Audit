@@ -1,3 +1,7 @@
+URL folderDriv = 1cX4x5WnHrKUg0zNWHH-8qjQ3d1iCWbwQ
+
+URL GoogleSheet = 1zUeF35TzE3l6pm45cMKclPGx0XGHNvaEE6xhAcPT5sw
+
 07-May-26
 แก้ไข 1
  ให้ปรับเพิ่มจาก session อันเดิมให้เพิ่มเวลาและชื่อนามสกุลจริงของลูกค้า(โดยชื่อนามสกุลจริงให้ลูกค้ากรอกเอง) และเปลี่ยนจากกดแท็บsessionเป็นการเพิ่มedit session ขึ้นมาเพื่อกดแทนการกดแท็บ
