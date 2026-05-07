@@ -5,235 +5,408 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- เรียกใช้ TinyMCE (Rich Text Editor) -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tinymce/6.8.3/tinymce.min.js"></script>
     
     <style>
-        body { background-color: #f8f9fa; font-family: 'Segoe UI', Tahoma, sans-serif; }
-        .card-header-custom { background-color: #0f4c81; color: white; border-radius: 10px 10px 0 0 !important; }
-        .table-custom th { background-color: #e2e8f0; color: #333; }
-        .row-year { background-color: #343a40; color: white; cursor: pointer; font-size: 1.1em; font-weight: bold; }
-        .row-customer { background-color: #dbeafe; font-weight: bold; border-bottom: 2px solid #fff; color: #1e3a8a; }
-        .row-audit-tag { background-color: #f1f5f9; cursor: pointer; color: #475569; font-size: 0.95em; border-left: 4px solid #0ea5e9; }
-        .row-audit-tag:hover { background-color: #e2e8f0; }
-        .row-document { background-color: #ffffff; }
-        .row-document:hover { background-color: #f8fafc; }
-        .file-link { background-color: #e0f2fe; color: #0369a1; padding: 4px 12px; border-radius: 20px; text-decoration: none; font-size: 0.9em; font-weight: 500;}
-        .file-link:hover { background-color: #bae6fd; }
-        .btn-upload-sm { font-size: 0.8em; padding: 2px 10px; border-radius: 15px; }
+        body { background-color: #f4f6f9; font-family: 'Inter', sans-serif; color: #333; }
+        
+        .bg-corporate { background-color: #0033a0 !important; }
+        .text-corporate { color: #0033a0 !important; }
+        .btn-corporate { background-color: #0033a0; color: white; border: none; }
+        .btn-corporate:hover { background-color: #002277; color: white; }
+        .border-corporate { border-color: #0033a0 !important; }
+        .btn-outline-corporate { color: #0033a0; border: 1px solid #0033a0; background-color: transparent; }
+        .btn-outline-corporate:hover { color: #ffffff !important; background-color: #0033a0; }
+        
+        .navbar-custom { background-color: #ffffff; box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
+        .card { border: none; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
+        
+        .table-custom th { background-color: #e9ecef; color: #495057; font-weight: 600; text-transform: uppercase; font-size: 0.85rem; letter-spacing: 0.5px; }
+        .row-year { background-color: #343a40; color: #ffffff; cursor: pointer; font-size: 1.05rem; font-weight: 600; transition: background-color 0.2s; }
+        .row-year:hover { background-color: #23272b; }
+        .row-customer { background-color: #f8f9fa; font-weight: 600; color: #0033a0; cursor: pointer; border-bottom: 2px solid #ffffff; }
+        .row-customer:hover { background-color: #e2e6ea; }
+        .row-document { background-color: #ffffff; border-bottom: 1px solid #f1f3f5; }
+        .row-audit-tag { background-color: #ffffff; color: #495057; border-left: 5px solid #0033a0; cursor: pointer; border-bottom: 1px solid #dee2e6; }
+        .row-audit-tag:hover { background-color: #f1f3f5; }
+        
+        .file-link { color: #0056b3; font-weight: 500; text-decoration: none; }
+        .file-link:hover { text-decoration: underline; }
+        .menu-card { cursor: pointer; transition: transform 0.2s, border-color 0.2s; border: 2px solid transparent; }
+        .menu-card:hover { transform: translateY(-3px); border-color: #0033a0; }
+        .icon-large { font-size: 2.5rem; margin-bottom: 15px; color: #6c757d; }
+        .spin { display: inline-block; animation: spin 1s linear infinite; }
+        @keyframes spin { 100% { transform: rotate(360deg); } }
 
-        .menu-card { cursor: pointer; transition: transform 0.2s, box-shadow 0.2s; border-radius: 15px; border: 2px solid transparent; }
-        .menu-card:hover { transform: translateY(-5px); box-shadow: 0 10px 20px rgba(0,0,0,0.1) !important; border-color: #0f4c81; }
-        .icon-large { font-size: 3.5rem; margin-bottom: 15px; }
-        .menu-title { font-weight: 800; color: #333; }
+        .modal-xl-custom { max-width: 95%; }
+        .doc-preview-box { background-color: #fff; border: 1px solid #ddd; padding: 30px; border-radius: 5px; min-height: 400px; box-shadow: inset 0 0 10px rgba(0,0,0,0.02); }
+        
+        /* 🌟 บังคับให้ตารางที่วาดโชว์เส้นขอบชัดเจนในหน้า Preview */
+        .doc-preview-box table { border-collapse: collapse; width: 100%; margin-bottom: 15px; }
+        .doc-preview-box td, .doc-preview-box th { border: 1px solid #ccc; padding: 8px; }
     </style>
 </head>
-<body class="p-4">
+<body>
+
+    <nav class="navbar navbar-custom py-3 px-4 mb-4">
+        <div class="container-fluid d-flex justify-content-between align-items-center"><span class="navbar-brand mb-0 h1 fw-bold text-corporate"><i class="bi bi-globe"></i> Audit Management System</span></div>
+    </nav>
+
+    <div class="toast-container position-fixed bottom-0 end-0 p-3" style="z-index: 1080;">
+        <div id="statusToast" class="toast align-items-center text-white bg-dark border-0" role="alert"><div class="d-flex"><div class="toast-body fw-bold" id="toastMessage"><i class="bi bi-arrow-repeat spin"></i> Processing...</div><button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button></div></div>
+    </div>
 
     <!-- 🏠 Main Menu -->
-    <div id="mainMenuPage" class="container mt-5">
-        <div class="text-center mb-5">
-            <h1 class="fw-bold" style="color: #0f4c81;"><i class="bi bi-shield-check"></i>01 Custom Audit</h1>
-            <p class="text-muted">Select a system</p>
-        </div>
+    <div id="mainMenuPage" class="container">
+        <div class="text-center mb-5 mt-4"><h2 class="fw-bold text-corporate">02 Audit Management</h2><p class="text-muted">Select system to access</p></div>
         <div class="row g-4 justify-content-center">
-            <div class="col-md-4">
-                <div class="card shadow-sm menu-card h-100 text-center p-4" onclick="alert('🚧 Under Development')">
-                    <i class="bi bi-clipboard-data icon-large text-secondary"></i><h4 class="menu-title">01 Audit Schedule</h4>
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="card shadow-sm menu-card h-100 text-center p-4 border-primary" onclick="openAuditResultPage()">
-                    <i class="bi bi-folder-check icon-large text-primary"></i><h4 class="menu-title text-primary">02 Audit Result</h4>
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="card shadow-sm menu-card h-100 text-center p-4" onclick="alert('🚧 Under Development')">
-                    <i class="bi bi-box-seam icon-large text-secondary"></i><h4 class="menu-title">03 Audit Material</h4>
-                </div>
-            </div>
+            <div class="col-md-4"><div class="card menu-card h-100 text-center p-4 border-info" onclick="openPage('customAuditPage')"><i class="bi bi-file-earmark-richtext icon-large text-info"></i><h5 class="fw-bold text-info">01 Custom Audit</h5><small class="text-muted">Create Custom Documents</small></div></div>
+            <div class="col-md-4"><div class="card menu-card h-100 text-center p-4 border-corporate" onclick="openPage('auditResultPage')"><i class="bi bi-folder-check icon-large text-corporate"></i><h5 class="fw-bold text-corporate">02 Audit Result</h5><small class="text-muted">Upload External Files</small></div></div>
+            <div class="col-md-4"><div class="card menu-card h-100 text-center p-4" onclick="alert('Under Development!')"><i class="bi bi-box-seam icon-large"></i><h5 class="fw-bold text-secondary">03 Audit Material</h5></div></div>
         </div>
     </div>
 
-    <!-- 📄 02 Audit Result -->
-    <div id="auditResultPage" style="display: none;">
-        <button class="btn btn-secondary mb-3 shadow-sm rounded-pill px-4" onclick="goBackToMenu()"><i class="bi bi-arrow-left-circle"></i> Back to Main Menu</button>
-        <div class="card shadow mb-4" style="border-radius: 10px;">
-            <div class="card-header card-header-custom d-flex justify-content-between align-items-center p-4">
-                <div><h3 class="mb-0 fw-bold"><i class="bi bi-folder-check"></i> 02 Audit Result</h3><small>Audit History Management System (Multi-Session Support)</small></div>
-                <div><button class="btn btn-warning fw-bold rounded-pill px-4" data-bs-toggle="modal" data-bs-target="#addYearModal"><i class="bi bi-calendar-plus"></i> Add New Audit</button></div>
+    <!-- 📄 01 Custom Audit Page -->
+    <div id="customAuditPage" class="container-fluid px-4" style="display: none;">
+        <button class="btn btn-outline-secondary mb-3 rounded-2 fw-bold" onclick="goBackToMenu()"><i class="bi bi-arrow-left"></i> Back to Main Menu</button>
+        <div class="card mb-4 border-info">
+            <div class="card-header bg-info text-white d-flex justify-content-between align-items-center p-3 rounded-top">
+                <div><h5 class="mb-0 fw-bold"><i class="bi bi-file-earmark-richtext"></i> Custom Audit Documents</h5></div>
+                <div><button class="btn btn-light btn-sm fw-bold text-info" onclick="openAddSessionModal('01')"><i class="bi bi-file-earmark-plus"></i> Create New Document</button></div>
             </div>
-            <div class="card-body p-4">
+            <div class="card-body p-0">
                 <div class="table-responsive">
-                    <table class="table table-bordered align-middle">
-                        <thead class="table-custom text-center">
-                            <tr><th class="text-start" style="width: 40%;">Category / Document Type</th><th style="width: 30%;">Attached File</th><th style="width: 15%;">Last Edit</th><th style="width: 15%;">Action</th></tr>
-                        </thead>
-                        <tbody id="tableBody"><tr><td colspan="4" class="text-center py-5"> loading...</td></tr></tbody>
+                    <table class="table mb-0 align-middle">
+                        <thead class="table-custom text-center"><tr><th class="text-start ps-4" style="width: 45%;">Document Title</th><th style="width: 15%;">Status</th><th style="width: 20%;">Last Edit</th><th style="width: 20%;">Action</th></tr></thead>
+                        <tbody id="tableBody_01"><tr><td colspan="4" class="text-center py-5 text-muted"><i class="bi bi-arrow-repeat spin"></i> Loading data...</td></tr></tbody>
                     </table>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Modals -->
-    <div class="modal fade" id="uploadModal" tabindex="-1">
+    <!-- 📄 02 Audit Result Page -->
+    <div id="auditResultPage" class="container-fluid px-4" style="display: none;">
+        <button class="btn btn-outline-secondary mb-3 rounded-2 fw-bold" onclick="goBackToMenu()"><i class="bi bi-arrow-left"></i> Back to Main Menu</button>
+        <div class="card mb-4 border-corporate">
+            <div class="card-header bg-corporate text-white d-flex justify-content-between align-items-center p-3 rounded-top">
+                <div><h5 class="mb-0 fw-bold"><i class="bi bi-server"></i> Audit Result Database</h5></div>
+                <div><button class="btn btn-light btn-sm fw-bold text-corporate" onclick="openAddSessionModal('02')"><i class="bi bi-folder-plus"></i> New Upload Session</button></div>
+            </div>
+            <div class="card-body p-0">
+                <div class="table-responsive">
+                    <table class="table mb-0 align-middle"><thead class="table-custom text-center"><tr><th class="text-start ps-4" style="width: 40%;">Category / Detail</th><th style="width: 30%;">Attached File</th><th style="width: 15%;">Last Edit</th><th style="width: 15%;">Action</th></tr></thead>
+                    <tbody id="tableBody_02"><tr><td colspan="4" class="text-center py-5 text-muted"><i class="bi bi-arrow-repeat spin"></i> Loading data...</td></tr></tbody></table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===================================== -->
+    <!-- 🌟 MODALS พื้นฐาน (สร้าง Session / อัปโหลด) -->
+    <!-- ===================================== -->
+    <div class="modal fade" id="addSessionModal" tabindex="-1">
         <div class="modal-dialog"><div class="modal-content">
-            <div class="modal-header bg-primary text-white"><h5 class="modal-title"><i class="bi bi-cloud-upload"></i> Upload File</h5><button class="btn-close btn-close-white" data-bs-dismiss="modal"></button></div>
+            <div class="modal-header bg-secondary text-white"><h6 class="modal-title fw-bold" id="addSessionTitle">New Session</h6><button class="btn-close btn-close-white" data-bs-dismiss="modal"></button></div>
             <div class="modal-body">
-                <input type="hidden" id="uploadYear"><input type="hidden" id="uploadCustomer"><input type="hidden" id="uploadAuditId"><input type="hidden" id="uploadDocType">
-                <input type="file" id="fileInput" class="form-control">
+                <input type="hidden" id="sysMode">
+                <label class="form-label fw-bold small">Year (e.g. 2024)</label><input type="number" id="sysYear" class="form-control mb-3">
+                <label class="form-label fw-bold small">Customer / Company Name</label><input type="text" id="sysCustomer" class="form-control mb-3" placeholder="e.g. HONDA">
+                <label class="form-label fw-bold small">Contact Person (Full Name)</label><input type="text" id="sysContact" class="form-control mb-3" placeholder="e.g. John Doe">
+                
+                <div id="sysDocTitleContainer" style="display:none;">
+                    <label class="form-label fw-bold small text-info"><i class="bi bi-fonts"></i> Document Title</label>
+                    <input type="text" id="sysDocTitle" class="form-control border-info" placeholder="e.g. Internal Audit Report (Oct)">
+                </div>
             </div>
-            <div class="modal-footer"><button type="button" id="btnSaveFile" class="btn btn-primary w-100" onclick="uploadFile()">Save File</button></div>
+            <div class="modal-footer"><button type="button" id="btnCreateSession" class="btn btn-primary w-100 fw-bold" onclick="executeCreateSession()">Create</button></div>
         </div></div>
     </div>
 
-    <div class="modal fade" id="addCustomerModal" tabindex="-1">
-        <div class="modal-dialog modal-sm"><div class="modal-content">
-            <div class="modal-header bg-info"><h5 class="modal-title fw-bold"><i class="bi bi-plus-circle"></i> Start Assessment</h5><button class="btn-close" data-bs-dismiss="modal"></button></div>
-            <div class="modal-body">
-                <input type="hidden" id="targetYear"> 
-                <label class="form-label fw-bold">Custom Name</label>
-                <input type="text" id="newCustomerName" class="form-control" placeholder="e.g. HONDA">
+    <!-- Modal เปิดหน้ากระดาษ TinyMCE Editor -->
+    <div class="modal fade" id="editorModal" tabindex="-1" data-bs-backdrop="static">
+        <div class="modal-dialog modal-xl-custom">
+            <div class="modal-content">
+                <div class="modal-header bg-info text-white">
+                    <h5 class="modal-title fw-bold"><i class="bi bi-pencil-square"></i> Editing: <span id="editorDocTitleDisplay"></span></h5>
+                    <button class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body bg-light">
+                    <input type="hidden" id="editDocAuditId">
+                    <div class="alert alert-warning py-2 small fw-bold"><i class="bi bi-info-circle"></i> Tip: You can insert tables, text, and image URLs. Do not copy-paste large image files directly.</div>
+                    <textarea id="tinymce-editor"></textarea>
+                </div>
+                <div class="modal-footer bg-light">
+                    <button type="button" class="btn btn-secondary fw-bold" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" id="btnSaveRichDoc" class="btn btn-info text-white fw-bold px-5" onclick="saveRichDocument()"><i class="bi bi-save"></i> Save Document</button>
+                </div>
             </div>
-            <div class="modal-footer"><button type="button" id="btnSaveCustomer" class="btn btn-info w-100 fw-bold" onclick="saveNewCustomer()">Create Session</button></div>
-        </div></div>
+        </div>
     </div>
 
-    <div class="modal fade" id="editCustomerModal" tabindex="-1">
-        <div class="modal-dialog modal-sm"><div class="modal-content">
-            <div class="modal-header bg-secondary text-white"><h5 class="modal-title fw-bold"><i class="bi bi-pencil"></i> Edit Customer Name</h5><button class="btn-close btn-close-white" data-bs-dismiss="modal"></button></div>
-            <div class="modal-body">
-                <input type="hidden" id="oldCustomerName"> <label class="form-label fw-bold">New Customer Name</label>
-                <input type="text" id="renameCustomerInput" class="form-control">
-            </div>
-            <div class="modal-footer"><button type="button" id="btnEditCustomer" class="btn btn-secondary w-100" onclick="saveEditCustomer()">Save</button></div>
-        </div></div>
-    </div>
+    <div class="modal fade" id="viewDocModal" tabindex="-1"><div class="modal-dialog modal-xl-custom"><div class="modal-content"><div class="modal-header bg-dark text-white"><h5 class="modal-title fw-bold"><i class="bi bi-file-text"></i> View Document</h5><button class="btn-close btn-close-white" data-bs-dismiss="modal"></button></div><div class="modal-body bg-light"><div id="docViewer" class="doc-preview-box"></div></div></div></div></div>
 
-    <div class="modal fade" id="addYearModal" tabindex="-1">
-        <div class="modal-dialog modal-sm"><div class="modal-content">
-            <div class="modal-header bg-warning"><h5 class="modal-title fw-bold">Add Year</h5><button class="btn-close" data-bs-dismiss="modal"></button></div>
-            <div class="modal-body"><input type="number" id="newYearInput" class="form-control" placeholder="e.g. 2026"></div>
-            <div class="modal-footer"><button class="btn btn-warning w-100 fw-bold" onclick="addYearToTableUI()">Confirm</button></div>
-        </div></div>
-    </div>
+    <div class="modal fade" id="uploadModal" tabindex="-1"><div class="modal-dialog"><div class="modal-content"><div class="modal-header bg-corporate text-white"><h6 class="modal-title fw-bold"><i class="bi bi-cloud-arrow-up"></i> Upload Document</h6><button class="btn-close btn-close-white" data-bs-dismiss="modal"></button></div><div class="modal-body"><input type="hidden" id="uploadYear"><input type="hidden" id="uploadCustomer"><input type="hidden" id="uploadAuditId"><input type="hidden" id="uploadDocType"><label class="form-label fw-bold small">1. Document Detail</label><textarea id="uploadDetail" class="form-control mb-3" rows="3"></textarea><label class="form-label fw-bold small">2. Select File</label><div class="input-group"><label class="btn btn-outline-secondary mb-0 fw-bold" for="fileInput">Choose File</label><input type="file" id="fileInput" class="d-none" onchange="document.getElementById('fileNameDisplay').value = this.files.length > 0 ? this.files[0].name : ''"><input type="text" id="fileNameDisplay" class="form-control" placeholder="No file chosen" readonly onclick="document.getElementById('fileInput').click()"></div></div><div class="modal-footer"><button type="button" id="btnSaveFile" class="btn btn-corporate w-100 fw-bold" onclick="uploadFile()">Save File</button></div></div></div></div>
+    <div class="modal fade" id="editDetailModal" tabindex="-1"><div class="modal-dialog"><div class="modal-content"><div class="modal-header bg-secondary text-white"><h6 class="modal-title fw-bold">Edit Detail</h6><button class="btn-close btn-close-white" data-bs-dismiss="modal"></button></div><div class="modal-body"><input type="hidden" id="editDetailAuditId"><input type="hidden" id="editDetailDocType"><input type="hidden" id="editDetailFileLink"><textarea id="editDetailInput" class="form-control" rows="4"></textarea></div><div class="modal-footer"><button type="button" id="btnSaveDetail" class="btn btn-secondary w-100 fw-bold" onclick="saveEditDetail()">Save Detail</button></div></div></div></div>
+    <div class="modal fade" id="editCustomerModal" tabindex="-1"><div class="modal-dialog modal-sm"><div class="modal-content"><div class="modal-header bg-secondary text-white"><h6 class="modal-title fw-bold">Edit Customer</h6><button class="btn-close btn-close-white" data-bs-dismiss="modal"></button></div><div class="modal-body"><input type="hidden" id="oldCustomerName"><input type="text" id="renameCustomerInput" class="form-control"></div><div class="modal-footer"><button type="button" id="btnEditCustomer" class="btn btn-secondary w-100 fw-bold" onclick="saveEditCustomer()">Save</button></div></div></div></div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-        function openAuditResultPage() { document.getElementById('mainMenuPage').style.display = 'none'; document.getElementById('auditResultPage').style.display = 'block'; loadTableData(); }
-        function goBackToMenu() { document.getElementById('auditResultPage').style.display = 'none'; document.getElementById('mainMenuPage').style.display = 'block'; }
-        function showLoading(msg) { document.getElementById('tableBody').innerHTML = `<tr><td colspan="4" class="text-center text-primary py-5">⏳ ${msg}...</td></tr>`; }
-
-        function loadTableData() { google.script.run.withSuccessHandler(renderTable).getAuditData(); }
-
-        function renderTable(data) {
-            var tbody = document.getElementById('tableBody');
-            if (!data || data.length === 0) { tbody.innerHTML = '<tr><td colspan="4" class="text-center text-muted py-5"><i class="bi bi-inbox fs-1"></i><br><strong>No data found</strong></td></tr>'; return; }
-
-            // 🌟 กลุ่มข้อมูลแบบใหม่: Year -> Customer -> Audit_ID -> Documents
-            var groupedData = {};
-            data.forEach(function(row) {
-                var ts=row[0], year=row[1], cust=row[2], aId=row[3], doc=row[4], fName=row[5], fLink=row[6], by=row[7];
-                if (!year || !cust || !aId) return; 
-
-                if (!groupedData[year]) groupedData[year] = {};
-                if (!groupedData[year][cust]) groupedData[year][cust] = {};
-                if (!groupedData[year][cust][aId]) groupedData[year][cust][aId] = { lastEdit: ts, docs: [] };
+        // ==========================================
+        // 🌟 INIT TINYMCE (ระบบ Word อัปเกรดใหม่!)
+        // ==========================================
+        document.addEventListener("DOMContentLoaded", function() {
+            tinymce.init({
+                selector: '#tinymce-editor', 
+                height: 500, 
+                plugins: 'table image link lists code',
+                // 🌟 เพิ่มปุ่ม customFileBtn (อัปโหลดไฟล์) ไว้ข้างๆ ปุ่มรูปภาพ
+                toolbar: 'undo redo | blocks | bold italic underline | alignleft aligncenter alignright alignjustify | bullist numlist | table | link image customFileBtn | code',
+                menubar: false, branding: false, promotion: false,
+                table_toolbar: 'tableprops tabledelete | tableinsertrowbefore tableinsertrowafter tabledeleterow | tableinsertcolbefore tableinsertcolafter tabledeletecol',
                 
-                groupedData[year][cust][aId].docs.push({ docType: doc, fileName: fName, fileLink: fLink, timestamp: ts, actionBy: by });
+                // 🌟 1. ระบบอัปโหลดรูปภาพอัตโนมัติ (Copy-Paste วางรูปได้เลย ไม่พัง!)
+                images_upload_handler: function (blobInfo, progress) {
+                    return new Promise((resolve, reject) => {
+                        var reader = new FileReader();
+                        reader.readAsDataURL(blobInfo.blob());
+                        reader.onload = function () {
+                            var base64data = reader.result;
+                            var filename = blobInfo.filename() || 'image.png';
+                            
+                            // ส่งรูปขึ้น Google Drive
+                            google.script.run.withSuccessHandler(function(url) {
+                                resolve(url); // ยัดลิงก์รูปลงหน้ากระดาษให้อัตโนมัติ
+                            }).withFailureHandler(function(error) {
+                                reject(error.message);
+                            }).uploadMediaToDrive(base64data, filename, true); // true = บอกว่าเป็นรูปภาพ
+                        };
+                    });
+                },
+
+                // 🌟 2. สร้างปุ่มอัปโหลดไฟล์แนบ (ฝังลงไปในกระดาษเลย)
+                setup: function (editor) {
+                    editor.ui.registry.addButton('customFileBtn', {
+                        icon: 'upload',
+                        tooltip: 'Upload Document / File',
+                        onAction: function () {
+                            // จำลองหน้าต่างเลือกไฟล์
+                            var input = document.createElement('input');
+                            input.setAttribute('type', 'file');
+                            input.onchange = function () {
+                                var file = this.files[0];
+                                if (!file) return;
+                                
+                                showToast("Uploading file to document...", "bg-dark");
+                                
+                                var reader = new FileReader();
+                                reader.readAsDataURL(file);
+                                reader.onload = function () {
+                                    // ส่งไฟล์ขึ้น Google Drive
+                                    google.script.run.withSuccessHandler(function(url) {
+                                        // 🌟 สร้างปุ่มลิงก์สวยๆ แปะลงไปตรงที่เคอร์เซอร์กระพริบอยู่
+                                        // 🌟 สร้างป้ายแท็กไฟล์แบบล็อกก้อน (ลบทีเดียวหายเกลี้ยง)
+                                        var linkHtml = `<span contenteditable="false" style="display: inline-block; margin: 2px 4px; vertical-align: middle;"><a href="${url}" target="_blank" style="background-color: #e0f2fe; border: 1px solid #7dd3fc; color: #0369a1; padding: 4px 12px; border-radius: 20px; text-decoration: none; font-size: 0.9em; font-weight: 600; display: inline-block;">📎 ${file.name}</a></span>&nbsp;`;
+                                        editor.insertContent(linkHtml);
+                                        showToast("File inserted successfully!", "bg-success");
+                                    }).withFailureHandler(function(error) {
+                                        alert("Upload failed: " + error.message);
+                                    }).uploadMediaToDrive(reader.result, file.name, false); // false = บอกว่าเป็นไฟล์เอกสาร
+                                };
+                            };
+                            input.click();
+                        }
+                    });
+                }
             });
+        });
+
+        // 🌟 แก้บั๊ก TinyMCE ตีกับ Bootstrap Modal
+        document.addEventListener('focusin', function(e) {
+            if (e.target.closest('.tox-tinymce-aux, .moxman-window, .tam-assetmanager-root') !== null) {
+                e.stopImmediatePropagation();
+            }
+        });
+
+        // (โค้ด window.uiState01... และฟังก์ชันอื่นๆ ด้านล่างปล่อยไว้เหมือนเดิมครับ)
+
+        // ==========================================
+        // UI & STATE CONTROL
+        // ==========================================
+        window.uiState01 = { years: {}, customers: {}, sessions: {} };
+        window.uiState02 = { years: {}, customers: {}, sessions: {} };
+        window.currentData01 = null; window.currentData02 = null;
+        const docTypesList = [ "1. Plant Tour information", "2. Audit Time Table", "3. Audit Preparation Material", "4. Audit Report (Customer)", "5. Audit Report (Internal)" ];
+
+        function showToast(msg, bgClass = 'bg-dark') { var toastEl = document.getElementById('statusToast'); toastEl.className = 'toast align-items-center text-white border-0 ' + bgClass; document.getElementById('toastMessage').innerHTML = `<i class="bi bi-info-circle"></i> ` + msg; new bootstrap.Toast(toastEl, {delay: 3000}).show(); }
+        function goBackToMenu() { document.getElementById('customAuditPage').style.display = 'none'; document.getElementById('auditResultPage').style.display = 'none'; document.getElementById('mainMenuPage').style.display = 'block'; }
+        function openPage(pageId) { document.getElementById('mainMenuPage').style.display = 'none'; document.getElementById(pageId).style.display = 'block'; if(pageId === 'customAuditPage') { loadData01(); } else { loadData02(); } }
+        function isExp(stateObj, key) { return stateObj[key] !== false; }
+        function tog(mode, type, key) { if(mode==='01') { window.uiState01[type][key] = !isExp(window.uiState01[type], key); renderTable01(window.currentData01); } else { window.uiState02[type][key] = !isExp(window.uiState02[type], key); renderTable02(window.currentData02); } }
+
+        // ==========================================
+        // 🌟 RENDER 01 (ระบบ Word)
+        // ==========================================
+        function loadData01() { google.script.run.withSuccessHandler(data => { window.currentData01 = data; renderTable01(data); }).getCustomAuditData(); }
+        function renderTable01(data) {
+            var tbody = document.getElementById('tableBody_01'); var groupedData = {};
+            if (data && data.length > 0) {
+                data.forEach(function(row) {
+                    var ts=row[0], year=row[1], cust=row[2], aId=row[3], docTitle=row[4], contentHtml=row[5], by=row[6], rName=row[7], status=row[8];
+                    if (!year || !cust || !aId) return; 
+                    if (!groupedData[year]) groupedData[year] = {}; if (!groupedData[year][cust]) groupedData[year][cust] = [];
+                    groupedData[year][cust].push({ aId: aId, title: docTitle, content: contentHtml, by: by, rName: rName, status: status, ts: ts });
+                });
+            }
+
+            var years = Object.keys(groupedData).sort((a, b) => parseInt(a) - parseInt(b));
+            if (years.length === 0) { tbody.innerHTML = `<tr><td colspan="4" class="text-center text-muted py-5"><i class="bi bi-inbox fs-1"></i><br><strong>No Custom Documents</strong></td></tr>`; return; }
 
             var html = '';
-            var years = Object.keys(groupedData).sort(function(a, b) { return parseInt(a) - parseInt(b); });
-            
             years.forEach(function(year) {
-                var yNum = parseInt(year); var yBE = yNum < 2500 ? yNum + 543 : yNum; 
-                html += `<tr class="row-year" data-bs-toggle="collapse" data-bs-target=".group-${year}"><td colspan="3"><i class="bi bi-caret-down-fill"></i>  ${yNum < 2500 ? ` ${yNum} (พ.ศ. ${yBE})` : `พ.ศ. ${yBE}`}</td><td class="text-center"><button class="btn btn-sm btn-light shadow-sm fw-bold" onclick="event.stopPropagation(); openAddCustomerModal('${year}')">+ Add Customer / Start Assessment</button></td></tr>`;
+                let isYOpen = isExp(window.uiState01.years, year);
+                html += `<tr class="row-year" onclick="tog('01', 'years', '${year}')"><td colspan="4" class="ps-3"><i class="bi bi-chevron-${isYOpen?'down':'right'}"></i> &nbsp; Year ${year}</td></tr>`;
                 
-                var customers = Object.keys(groupedData[year]).sort();
-                customers.forEach(function(cust) {
-                    var safeCustId = cust.replace(/[^a-zA-Z0-9]/g, ''); 
-                    html += `
-                    <tr class="collapse show group-${year} row-customer">
-                        <td colspan="4" class="ps-4">
-                            <div class="d-flex justify-content-between align-items-center">
-                                <span><i class="bi bi-building"></i> Customer Name: ${cust}</span>
-                                <div><button class="btn btn-sm btn-outline-secondary bg-white me-1" onclick="openEditCustomerModal('${cust}')"><i class="bi bi-pencil-square"></i> edit</button></div>
-                            </div>
-                        </td>
-                    </tr>`;
-                    
-                    var auditIds = Object.keys(groupedData[year][cust]).sort().reverse(); // เอา ID ล่าสุดขึ้นก่อน
-                    auditIds.forEach(function(aId) {
-                        var safeTagId = aId.replace(/[^a-zA-Z0-9]/g, ''); 
-                        var lastActive = groupedData[year][cust][aId].lastEdit || 'Wait For Update...';
+                if(isYOpen) {
+                    var customers = Object.keys(groupedData[year]).sort();
+                    customers.forEach(function(cust) {
+                        let custKey = year + '_' + cust; let isCOpen = isExp(window.uiState01.customers, custKey);
+                        html += `<tr class="row-customer" onclick="tog('01', 'customers', '${custKey}')"><td colspan="4" class="ps-4"><span><i class="bi bi-chevron-${isCOpen?'down':'right'}"></i> &nbsp; <i class="bi bi-building"></i> Customer: ${cust}</span></td></tr>`;
                         
-                        // 🌟 แท็กประวัติ (คลิกเพื่อกาง 5 ไฟล์)
-                        html += `
-                        <tr class="collapse show group-${year} row-audit-tag" data-bs-toggle="collapse" data-bs-target=".doc-${safeTagId}">
-                            <td colspan="3" class="ps-5"><i class="bi bi-tag-fill text-info"></i> Session ID: <strong>${aId}</strong> <span class="ms-3 text-muted small">(Last Update: ${lastActive})</span></td>
-                            <td class="text-center"><button class="btn btn-sm btn-outline-danger" onclick="event.stopPropagation(); deleteSession('${aId}')"><i class="bi bi-trash"></i> Delete</button></td>
-                        </tr>`;
-
-                        groupedData[year][cust][aId].docs.forEach(function(doc) {
-                            var fileHtml = doc.fileName ? 
-                                `<td><a href="${doc.fileLink}" target="_blank" class="file-link"><i class="bi bi-check-circle-fill text-success"></i> ${doc.fileName}</a></td><td style="font-size: 0.85em;">${doc.timestamp}<br>${doc.actionBy}</td><td><a href="${doc.fileLink}" target="_blank" class="btn btn-outline-success btn-upload-sm"><i class="bi bi-eye"></i> เปิด</a><button class="btn btn-outline-danger btn-upload-sm ms-1" onclick="removeFile('${aId}', '${doc.docType}')"><i class="bi bi-x"></i></button></td>` : 
-                                `<td class="text-secondary small">- No files uploaded -</td><td>-</td><td><button class="btn btn-primary btn-upload-sm" onclick="openUploadModal('${year}', '${cust}', '${aId}', '${doc.docType}')"><i class="bi bi-upload"></i> Upload</button></td>`;
-                            
-                            html += `<tr class="collapse group-${year} doc-${safeTagId} row-document text-center"><td class="text-start ps-5 text-muted ms-4" style="padding-left: 5rem !important;">↳ ${doc.docType}</td>${fileHtml}</tr>`;
-                        });
+                        if(isCOpen) {
+                            var docs = groupedData[year][cust];
+                            docs.forEach(function(doc) {
+                                var isCompleted = doc.status === "Completed" && doc.content !== "";
+                                var statusBadge = isCompleted ? `<span class="badge bg-success"><i class="bi bi-check-circle"></i> Completed</span>` : `<span class="badge bg-warning text-dark"><i class="bi bi-hourglass-split"></i> Draft</span>`;
+                                var safeContent = isCompleted ? encodeURIComponent(doc.content) : "";
+                                var dateDisplay = doc.ts ? doc.ts : '-'; 
+                                
+                                html += `
+                                <tr class="text-center row-document">
+                                    <td class="text-start ps-5">
+                                        <i class="bi bi-file-earmark-richtext text-info fs-5 align-middle me-1"></i> <strong class="text-dark fs-6">${doc.title}</strong>
+                                        <br><small class="text-muted"><i class="bi bi-tag text-secondary"></i> ID: ${doc.aId} &nbsp;|&nbsp; <i class="bi bi-person text-secondary"></i> ${doc.rName || '-'}</small>
+                                    </td>
+                                    <td>${statusBadge}</td><td style="font-size: 0.85em; color: #6c757d;">${dateDisplay}<br>${doc.by}</td>
+                                    <td>
+                                        ${isCompleted ? `<button class="btn btn-outline-primary btn-upload-sm me-1" onclick="event.stopPropagation(); viewDocument('${safeContent}')"><i class="bi bi-eye"></i> View</button>` : ''}
+                                        <button class="btn btn-info btn-upload-sm text-white fw-bold shadow-sm" onclick="event.stopPropagation(); openEditor('${doc.aId}', '${doc.title}', '${safeContent}')"><i class="bi bi-pencil-square"></i> Edit</button>
+                                        <button class="btn btn-outline-danger btn-upload-sm ms-1" onclick="event.stopPropagation(); deleteSess('01', '${doc.aId}')"><i class="bi bi-trash"></i></button>
+                                    </td>
+                                </tr>`;
+                            });
+                        }
                     });
+                }
+            });
+            tbody.innerHTML = html;
+        }
+
+        function openEditor(aId, title, safeContentStr) {
+            document.getElementById('editDocAuditId').value = aId; document.getElementById('editorDocTitleDisplay').innerText = title;
+            var htmlContent = safeContentStr ? decodeURIComponent(safeContentStr) : "";
+            tinymce.get('tinymce-editor').setContent(htmlContent);
+            new bootstrap.Modal(document.getElementById('editorModal')).show();
+        }
+
+        function saveRichDocument() {
+            var aId = document.getElementById('editDocAuditId').value;
+            var contentHTML = tinymce.get('tinymce-editor').getContent(); 
+            if(contentHTML.trim() === "") return alert("Document is empty!");
+            var btn = document.getElementById('btnSaveRichDoc'); btn.innerHTML = '<i class="bi bi-arrow-repeat spin"></i> Saving...'; btn.disabled = true;
+            showToast("Saving document...", "bg-dark");
+            google.script.run.withSuccessHandler(msg => {
+                bootstrap.Modal.getInstance(document.getElementById('editorModal')).hide();
+                btn.innerHTML = '<i class="bi bi-save"></i> Save Document'; btn.disabled = false;
+                showToast(msg, "bg-success"); loadData01();
+            }).saveCustomDocContent(aId, contentHTML); 
+        }
+
+        function viewDocument(safeContentStr) {
+            var htmlContent = decodeURIComponent(safeContentStr);
+            document.getElementById('docViewer').innerHTML = htmlContent; 
+            new bootstrap.Modal(document.getElementById('viewDocModal')).show();
+        }
+
+        // ==========================================
+        // 🌟 RENDER 02 (ระบบไฟล์เดิม เพิ่มปุ่ม Edit Name / Session กลับมา)
+        // ==========================================
+        function loadData02() { google.script.run.withSuccessHandler(data => { window.currentData02 = data; renderTable02(data); }).getAuditData(); }
+        function renderTable02(data) {
+            var tbody = document.getElementById('tableBody_02'); var groupedData = {};
+            if (data && data.length > 0) {
+                data.forEach(function(row) {
+                    var ts=row[0], year=row[1], cust=row[2], aId=row[3], doc=row[4], fName=row[5], fLink=row[6], by=row[7], rName=row[8], detail=row[9];
+                    if (!year || !cust || !aId) return; 
+                    if (!groupedData[year]) groupedData[year] = {}; if (!groupedData[year][cust]) groupedData[year][cust] = {};
+                    if (!groupedData[year][cust][aId]) { groupedData[year][cust][aId] = { lastEdit: ts, contactName: rName, docs: {} }; docTypesList.forEach(dt => groupedData[year][cust][aId].docs[dt] = []); }
+                    if(fName && fLink && doc) groupedData[year][cust][aId].docs[doc].push({ fileName: fName, fileLink: fLink, timestamp: ts, actionBy: by, fileDetail: detail });
                 });
+            }
+
+            var years = Object.keys(groupedData).sort((a, b) => parseInt(a) - parseInt(b));
+            if (years.length === 0) { tbody.innerHTML = `<tr><td colspan="4" class="text-center text-muted py-5"><i class="bi bi-inbox fs-1"></i><br><strong>No Upload Data</strong></td></tr>`; return; }
+
+            var html = '';
+            years.forEach(function(year) {
+                let isYOpen = isExp(window.uiState02.years, year);
+                html += `<tr class="row-year" onclick="tog('02', 'years', '${year}')"><td colspan="4" class="ps-3"><i class="bi bi-chevron-${isYOpen?'down':'right'}"></i> &nbsp; Year ${year}</td></tr>`;
+                if(isYOpen) {
+                    var customers = Object.keys(groupedData[year]).sort();
+                    customers.forEach(function(cust) {
+                        let custKey = year + '_' + cust; let isCOpen = isExp(window.uiState02.customers, custKey);
+                        
+                        // 🌟 ใส่ปุ่ม Edit Name กลับมาแล้ว
+                        html += `<tr class="row-customer" onclick="tog('02', 'customers', '${custKey}')"><td colspan="4" class="ps-4"><div class="d-flex justify-content-between align-items-center"><span><i class="bi bi-chevron-${isCOpen?'down':'right'}"></i> &nbsp; <i class="bi bi-building"></i> Customer: ${cust}</span><div><button class="btn btn-sm btn-outline-secondary me-1" onclick="event.stopPropagation(); openEditCustomerModal('${cust}')"><i class="bi bi-pencil-square"></i> Edit Name</button></div></div></td></tr>`;
+                        
+                        if(isCOpen) {
+                            var auditIds = Object.keys(groupedData[year][cust]).sort().reverse(); 
+                            auditIds.forEach(function(aId) {
+                                let isSOpen = isExp(window.uiState02.sessions, aId);
+                                var sessData = groupedData[year][cust][aId];
+                                var lastActive = sessData.lastEdit ? sessData.lastEdit : '-';
+                                
+                                // 🌟 ใส่ปุ่ม Edit Session กลับมาแล้ว
+                                html += `<tr class="row-audit-tag" onclick="tog('02', 'sessions', '${aId}')"><td colspan="3" class="ps-5"><div class="d-flex flex-column py-2"><span><i class="bi bi-chevron-${isSOpen?'down':'right'} fw-bold"></i> &nbsp; <i class="bi bi-tags-fill text-corporate"></i> Session ID: <strong>${aId}</strong></span><span class="text-muted small ms-4 mt-1"><i class="bi bi-clock"></i> Updated: ${lastActive}</span></div></td><td class="text-center align-middle"><button class="btn btn-sm btn-outline-primary me-1" onclick="event.stopPropagation(); tog('02', 'sessions', '${aId}')"><i class="bi bi-list-check"></i> Edit Session</button><button class="btn btn-sm btn-outline-danger" onclick="event.stopPropagation(); deleteSess('02', '${aId}')"><i class="bi bi-trash"></i></button></td></tr>`;
+
+                                if(isSOpen) {
+                                    docTypesList.forEach(function(dt) {
+                                        var files = sessData.docs[dt] || [];
+                                        html += `<tr class="row-document"><td colspan="3" class="ps-5 fw-bold text-dark" style="padding-left: 5rem !important;"><i class="bi bi-folder2-open text-corporate"></i> ${dt}</td><td class="text-center"><button class="btn btn-sm btn-outline-corporate fw-bold" onclick="event.stopPropagation(); openUploadModal('${year}', '${cust}', '${aId}', '${dt}')"><i class="bi bi-upload"></i> Upload</button></td></tr>`;
+                                        if (files.length === 0) { html += `<tr class="text-center row-document"><td colspan="4" class="text-secondary small py-2">- No file -</td></tr>`; } 
+                                        else {
+                                            files.forEach(function(f) {
+                                                var dateDisplay = f.timestamp ? f.timestamp : '-';
+                                                html += `<tr class="text-center row-document"><td class="text-start" style="padding-left: 6.5rem !important; width: 40%;"><span class="text-dark small">${f.fileDetail || '-'}</span></td><td><a href="${f.fileLink}" target="_blank" class="file-link"><i class="bi bi-file-earmark-check text-success"></i> ${f.fileName}</a></td><td style="font-size: 0.85em; color: #6c757d;">${dateDisplay}</td><td><button class="btn btn-outline-danger btn-upload-sm ms-1" onclick="event.stopPropagation(); removeFile('${aId}', '${dt}', '${f.fileLink}')"><i class="bi bi-trash"></i></button></td></tr>`;
+                                            });
+                                        }
+                                    });
+                                }
+                            });
+                        }
+                    });
+                }
             });
             tbody.innerHTML = html;
         }
 
         // ==========================================
-        // ฟังก์ชันควบคุมปุ่ม
+        // SHARED FUNCTIONS 
         // ==========================================
-        function addYearToTableUI() {
-            var y = document.getElementById('newYearInput').value; if(y==="") return;
-            var num = parseInt(y); var be = num < 2500 ? num + 543 : num;
-            document.getElementById('tableBody').insertAdjacentHTML('beforeend', `<tr class="row-year" data-bs-toggle="collapse" data-bs-target=".group-${y}"><td colspan="3"><i class="bi bi-caret-down-fill"></i> ปี ${num < 2500 ? `ค.ศ. ${num} (พ.ศ. ${be})` : `พ.ศ. ${be}`}</td><td class="text-center"><button class="btn btn-sm btn-light fw-bold" onclick="event.stopPropagation(); openAddCustomerModal('${y}')">+ Add Customer</button></td></tr>`);
-            bootstrap.Modal.getInstance(document.getElementById('addYearModal')).hide();
-        }
-
-        function openAddCustomerModal(year) { document.getElementById('targetYear').value = year; new bootstrap.Modal(document.getElementById('addCustomerModal')).show(); }
-        
-        function saveNewCustomer() {
-            var y = document.getElementById('targetYear').value, c = document.getElementById('newCustomerName').value; if(c==="") return;
-            document.getElementById('btnSaveCustomer').innerHTML = 'loading...';
-            google.script.run.withSuccessHandler(msg => { bootstrap.Modal.getInstance(document.getElementById('addCustomerModal')).hide(); alert(msg); showLoading("Updating..."); setTimeout(loadTableData, 1500); }).createNewCustomerFolders(y, c); 
-        }
-
-        function openUploadModal(y, c, aId, type) {
-            document.getElementById('uploadYear').value = y; document.getElementById('uploadCustomer').value = c; document.getElementById('uploadAuditId').value = aId; document.getElementById('uploadDocType').value = type;
-            new bootstrap.Modal(document.getElementById('uploadModal')).show();
-        }
-
-        function uploadFile() {
-            var fInput = document.getElementById('fileInput'); if(fInput.files.length===0) return alert("Please select a file!");
-            var y = document.getElementById('uploadYear').value, c = document.getElementById('uploadCustomer').value, aId = document.getElementById('uploadAuditId').value, type = document.getElementById('uploadDocType').value;
-            var f = fInput.files[0], reader = new FileReader();
-            document.getElementById('btnSaveFile').innerHTML = 'loading...';
-            reader.onload = e => { google.script.run.withSuccessHandler(msg => { bootstrap.Modal.getInstance(document.getElementById('uploadModal')).hide(); alert(msg); showLoading("Link Updating..."); setTimeout(loadTableData, 2000); }).uploadFileToDrive(e.target.result, f.name, y, c, aId, type, "1cX4x5WnHrKUg0zNWHH-8qjQ3d1iCWbwQ"); };
-            reader.readAsDataURL(f);
-        }
-
-        function removeFile(aId, type) {
-            if(confirm("Remove this" + type + " file?")) { showLoading("Deleting..."); google.script.run.withSuccessHandler(msg => { setTimeout(loadTableData, 1500); }).removeFileFromSheet(aId, type); }
-        }
-
+        function openAddSessionModal(mode) { document.getElementById('sysMode').value = mode; document.getElementById('addSessionTitle').innerHTML = mode === '01' ? '<i class="bi bi-file-earmark-plus"></i> New Custom Document' : '<i class="bi bi-cloud-arrow-up"></i> New Upload Session'; document.getElementById('sysYear').value = new Date().getFullYear(); document.getElementById('sysDocTitleContainer').style.display = mode === '01' ? 'block' : 'none'; new bootstrap.Modal(document.getElementById('addSessionModal')).show(); }
+        function executeCreateSession() { var mode = document.getElementById('sysMode').value; var y = document.getElementById('sysYear').value, c = document.getElementById('sysCustomer').value, r = document.getElementById('sysContact').value; var dTitle = document.getElementById('sysDocTitle').value; if(!y || !c || !r) return alert("Please fill in Year, Customer, and Contact."); if(mode === '01' && !dTitle) return alert("Please enter a Document Title."); var btn = document.getElementById('btnCreateSession'); btn.innerHTML = '<i class="bi bi-arrow-repeat spin"></i>'; btn.disabled = true; showToast("Creating...", "bg-dark"); if(mode === '01') { google.script.run.withSuccessHandler(msg => { finishCreateSess(msg); loadData01(); }).createNewCustomSession(y, c, r, dTitle); } else { google.script.run.withSuccessHandler(msg => { finishCreateSess(msg); loadData02(); }).createNewCustomerFolders(y, c, r); } }
+        function finishCreateSess(msg) { bootstrap.Modal.getInstance(document.getElementById('addSessionModal')).hide(); document.getElementById('sysCustomer').value = ""; document.getElementById('sysContact').value = ""; document.getElementById('sysDocTitle').value = ""; document.getElementById('btnCreateSession').innerHTML = 'Create'; document.getElementById('btnCreateSession').disabled = false; showToast(msg, "bg-success"); }
+        function deleteSess(mode, aId) { if(confirm("Permanently delete this?")) { showToast("Deleting...", "bg-danger"); if(mode === '01') { google.script.run.withSuccessHandler(msg => { showToast(msg, "bg-success"); loadData01(); }).deleteCustomSession(aId); } else { google.script.run.withSuccessHandler(msg => { showToast(msg, "bg-success"); loadData02(); }).deleteAuditSession(aId); } } }
+        function openUploadModal(y, c, aId, type) { document.getElementById('uploadYear').value = y; document.getElementById('uploadCustomer').value = c; document.getElementById('uploadAuditId').value = aId; document.getElementById('uploadDocType').value = type; document.getElementById('uploadDetail').value = ""; document.getElementById('fileInput').value = ""; document.getElementById('fileNameDisplay').value = ""; new bootstrap.Modal(document.getElementById('uploadModal')).show(); }
+        function uploadFile() { var fInput = document.getElementById('fileInput'); if(fInput.files.length===0) return alert("Please select a file."); var y = document.getElementById('uploadYear').value, c = document.getElementById('uploadCustomer').value, aId = document.getElementById('uploadAuditId').value, type = document.getElementById('uploadDocType').value, detail = document.getElementById('uploadDetail').value; var folderId = "1cX4x5WnHrKUg0zNWHH-8qjQ3d1iCWbwQ"; var f = fInput.files[0], reader = new FileReader(); document.getElementById('btnSaveFile').innerHTML = '<i class="bi bi-arrow-repeat spin"></i>'; document.getElementById('btnSaveFile').disabled = true; showToast("Uploading...", "bg-dark"); reader.onload = e => { google.script.run.withSuccessHandler(msg => { bootstrap.Modal.getInstance(document.getElementById('uploadModal')).hide(); document.getElementById('btnSaveFile').innerHTML = 'Save File'; document.getElementById('btnSaveFile').disabled = false; document.getElementById('uploadDetail').value = ""; document.getElementById('fileInput').value = ""; document.getElementById('fileNameDisplay').value = ""; showToast(msg, "bg-success"); loadData02(); }).uploadFileToDrive(e.target.result, f.name, y, c, aId, type, folderId, detail); }; reader.readAsDataURL(f); }
+        function removeFile(aId, type, link) { if(confirm("Delete this file?")) { showToast("Deleting...", "bg-danger"); google.script.run.withSuccessHandler(msg => { showToast(msg, "bg-success"); loadData02(); }).removeFileFromSheet(aId, type, link); } }
         function openEditCustomerModal(c) { document.getElementById('oldCustomerName').value = c; document.getElementById('renameCustomerInput').value = c; new bootstrap.Modal(document.getElementById('editCustomerModal')).show(); }
+        function saveEditCustomer() { var oldC = document.getElementById('oldCustomerName').value, newC = document.getElementById('renameCustomerInput').value; if(newC===""||newC===oldC) return; document.getElementById('btnEditCustomer').innerHTML = '<i class="bi bi-arrow-repeat spin"></i>'; document.getElementById('btnEditCustomer').disabled = true; showToast("Updating data...", "bg-dark"); google.script.run.withSuccessHandler(msg => { bootstrap.Modal.getInstance(document.getElementById('editCustomerModal')).hide(); document.getElementById('btnEditCustomer').innerHTML = 'Save'; document.getElementById('btnEditCustomer').disabled = false; showToast(msg, "bg-success"); loadData01(); loadData02(); }).renameCustomerInSheet(oldC, newC); }
         
-        function saveEditCustomer() {
-            var oldC = document.getElementById('oldCustomerName').value, newC = document.getElementById('renameCustomerInput').value; if(newC===""||newC===oldC) return;
-            document.getElementById('btnEditCustomer').innerHTML = 'loading...';
-            google.script.run.withSuccessHandler(msg => { bootstrap.Modal.getInstance(document.getElementById('editCustomerModal')).hide(); alert(msg); showLoading("Updating..."); setTimeout(loadTableData, 1500); }).renameCustomerInSheet(oldC, newC);
-        }
-
-        function deleteSession(aId) {
-            if(confirm("⚠️ Delete assessment ID:  " + aId + "?")) { showLoading("Deleting..."); google.script.run.withSuccessHandler(msg => { setTimeout(loadTableData, 1500); }).deleteAuditSession(aId); }
-        }
     </script>
+    
 </body>
 </html>
