@@ -21,6 +21,6 @@
   เวลากดลบไฟล์บนหน้าเว็บแล้ว แต่ในDrivไม่ยอมลบให้
 
 07-May-2026
-แก้ 01 Audit Schedule เอา year และ Customer Name ออก ให้เหลือแค่ Contact Person (Full Name) และ  Document Title 
+แก้ 01 Audit Schedule เอา year และ Customer Name ออก ให้เหลือแค่ Contact Person (Full Name) และ  Document Title บันทึกแล้วแต่อยากแก้ชื่อtitleเผื่อเขียนผิด 
 แก้ 02 Audit Result ไม่มีการแสดงชื่อลูกค้าที่ดึงชื่อผู้ติดต่อมาจาก Customer_Real_Name จาก Data ในชีต 02_Audit Result ใน Google sheet 
 
