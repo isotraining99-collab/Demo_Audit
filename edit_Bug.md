@@ -43,3 +43,5 @@ URL GoogleSheet = 1zUeF35TzE3l6pm45cMKclPGx0XGHNvaEE6xhAcPT5sw
 //ถามเพิ่มในนี้มีการนับ 1,000 Editor Loads ต่อเดือน เป็นโควต้าไหม ถ้ามีจะแก้ยังไง
 
 // https://script.google.com/macros/s/AKfycbyyIReQAt_OxRAElHLgw5iX1ES4aLvTkTz8699D0Oa2wwoPJzbdApd4SvjtvIdhw0dwzw/exec ลองดู
+
+//https://script.google.com/a/macros/minebea.co.th/s/AKfycbz5ph_RX3OtqzZc41Ufkm5duIbZDt4p9fDoE2488xZ-6nRDIvJHRc4pmLy2n7FaJxG-pA/exec ทำไมเกี่ยวที่เปิดไม่ได้
