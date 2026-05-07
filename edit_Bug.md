@@ -31,7 +31,7 @@ URL GoogleSheet = 1zUeF35TzE3l6pm45cMKclPGx0XGHNvaEE6xhAcPT5sw
 4) อัพรูปจากเครื่องลงไดร์ฟได้แล้วแต่มันไม่แสดงบน Word Doc ที่ทำทั้งตอนที่ edit และตอนที่ View Document
 5) พอเข้ากดEditแล้วลบรูป พอกดsav Doc มันแสดง Document is empty!
 6) ติดตั้งระบบแจ้งเตือนการย้ายข้อมูล (Data Archiving Notification)ดีไหม? เช่น เอกสารฉบับนี้จะถูกย้ายออกจากฐานข้อมูลหลัก ไปเก็บไว้ที่ฐานข้อมูลเก่า (Archive) ในวันที่ 1 กรกฎาคม 2027 เวลาเที่ยงคืนตรง
-7) เอาไป Run บนเมลบริษัทแล้ว editor ขึ้น Unknown User (@minebea.co.th)แก้ไง
+7) ใช้เมลบริษัทแล้ว editor ขึ้น Unknown User (@minebea.co.th)แก้ไง
 
 หน้า CB material ทำเหมือน 
 //ถามเพิ่มชื่อ url => https://script.google.com/ แก้ชื่อได้ไหม
