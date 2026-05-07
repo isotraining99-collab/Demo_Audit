@@ -24,7 +24,7 @@ URL GoogleSheet = 1zUeF35TzE3l6pm45cMKclPGx0XGHNvaEE6xhAcPT5sw
 แก้ไข 4
   เวลากดลบไฟล์บนหน้าเว็บแล้ว แต่ในDrivไม่ยอมลบให้
 
-07-May-2026
+07-May-2026   =>เพิ่ม addmin User
 1) แก้ 01 Custome Audit เอา year และ Customer Name ออก ให้เหลือแค่ Contact Person (Full Name) และ  Document Title บันทึกแล้วแต่อยากแก้ชื่อtitleเผื่อเขียนผิด สามารถเพิ่มสีในช่องตารางที่สร้างในไฟล์Docได้ ให้มีการกด refresh หน้า  View Document ได้เพราะบางทีที่แก้มันยังโหลดมาหน้านี้เดี๋ยวUserจะตกใจและเขียนซ้ำ
 2) แก้ 02 Audit Result 1)ไม่มีการแสดงชื่อลูกค้าที่ดึงชื่อผู้ติดต่อมาจาก Customer_Real_Name จาก Data ในชีต 02_Audit Result ใน Google sheet 2)Edit detail ไม่ได้ 4)เพิ่มปีแล้ว เพิ่มDataบริษัทที่หนึ่งในปีนั้นแล้ว แต่ไม่ปุ่มให้เพิ่มบริษัทถัดไปในปีนั้นๆเพื่อความสะดวก
 3) แก้ โปรแกรม word doc ให้เปลี่ยนสีแต่ละช่อง (Cell) ได้แบบเจาะจง โดนถ้าคุณต้องการคุมโทนสี (เช่น สีวันหยุดต้องแดงเฉดนี้เท่านั้น)
@@ -33,7 +33,9 @@ URL GoogleSheet = 1zUeF35TzE3l6pm45cMKclPGx0XGHNvaEE6xhAcPT5sw
 6) ติดตั้งระบบแจ้งเตือนการย้ายข้อมูล (Data Archiving Notification)ดีไหม? เช่น เอกสารฉบับนี้จะถูกย้ายออกจากฐานข้อมูลหลัก ไปเก็บไว้ที่ฐานข้อมูลเก่า (Archive) ในวันที่ 1 กรกฎาคม 2027 เวลาเที่ยงคืนตรง
 7) ใช้เมลบริษัทแล้ว editor ขึ้น Unknown User (@minebea.co.th)แก้ไง
 
-หน้า CB material ทำเหมือน 
+หน้า 03 CB material ทำเหมือน
+
+02 CB Audit 
 //ถามเพิ่มชื่อ url => https://script.google.com/ แก้ชื่อได้ไหม
 
 //ถามเพิ่มในนี้มีการนับ 1,000 Editor Loads ต่อเดือน เป็นโควต้าไหม ถ้ามีจะแก้ยังไง
