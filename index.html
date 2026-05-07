@@ -52,7 +52,7 @@
 <body>
 
     <nav class="navbar navbar-custom py-3 px-4 mb-4">
-        <div class="container-fluid d-flex justify-content-between align-items-center"><span class="navbar-brand mb-0 h1 fw-bold text-corporate"><i class="bi bi-globe"></i> Audit Management System</span></div>
+        <div class="container-fluid d-flex justify-content-between align-items-center"><span class="navbar-brand mb-0 h1 fw-bold text-corporate"><i class="bi bi-globe"></i>TS-BB(Audit)</span></div>
     </nav>
 
     <div class="toast-container position-fixed bottom-0 end-0 p-3" style="z-index: 1080;">
@@ -61,9 +61,9 @@
 
     <!-- 🏠 Main Menu -->
     <div id="mainMenuPage" class="container">
-        <div class="text-center mb-5 mt-4"><h2 class="fw-bold text-corporate">02 Audit Management</h2><p class="text-muted">Select system to access</p></div>
+        <div class="text-center mb-5 mt-4"><h2 class="fw-bold text-corporate">01 Custom Audit</h2><p class="text-muted">Select system to access</p></div>
         <div class="row g-4 justify-content-center">
-            <div class="col-md-4"><div class="card menu-card h-100 text-center p-4 border-info" onclick="openPage('customAuditPage')"><i class="bi bi-file-earmark-richtext icon-large text-info"></i><h5 class="fw-bold text-info">01 Custom Audit</h5><small class="text-muted">Create Custom Documents</small></div></div>
+            <div class="col-md-4"><div class="card menu-card h-100 text-center p-4 border-info" onclick="openPage('customAuditPage')"><i class="bi bi-file-earmark-richtext icon-large text-info"></i><h5 class="fw-bold text-info">01 Audit Schedule</h5><small class="text-muted">Create Custom Documents</small></div></div>
             <div class="col-md-4"><div class="card menu-card h-100 text-center p-4 border-corporate" onclick="openPage('auditResultPage')"><i class="bi bi-folder-check icon-large text-corporate"></i><h5 class="fw-bold text-corporate">02 Audit Result</h5><small class="text-muted">Upload External Files</small></div></div>
             <div class="col-md-4"><div class="card menu-card h-100 text-center p-4" onclick="alert('Under Development!')"><i class="bi bi-box-seam icon-large"></i><h5 class="fw-bold text-secondary">03 Audit Material</h5></div></div>
         </div>
@@ -93,7 +93,7 @@
         <button class="btn btn-outline-secondary mb-3 rounded-2 fw-bold" onclick="goBackToMenu()"><i class="bi bi-arrow-left"></i> Back to Main Menu</button>
         <div class="card mb-4 border-corporate">
             <div class="card-header bg-corporate text-white d-flex justify-content-between align-items-center p-3 rounded-top">
-                <div><h5 class="mb-0 fw-bold"><i class="bi bi-server"></i> Audit Result Database</h5></div>
+                <div><h5 class="mb-0 fw-bold"><i class="bi bi-server"></i> 02 Audit Result </h5></div>
                 <div><button class="btn btn-light btn-sm fw-bold text-corporate" onclick="openAddSessionModal('02')"><i class="bi bi-folder-plus"></i> New Upload Session</button></div>
             </div>
             <div class="card-body p-0">
