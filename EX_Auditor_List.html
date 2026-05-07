@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <base target="_top">
+</head>
+
+<body>
+
+  <div class="viewer-wrapper">
+
+    <!-- TOP BAR -->
+    <div class="viewer-header">
+      <div class="title">Auditor List</div>
+
+      <a href="https://drive.google.com/drive/folders/10ZX4F5NTsOyVSfK3mlbv8opA0seJC-4b?usp=drive_link" target="_blank"
+        class="open-btn">
+        🖊️ Open for Update
+      </a>
+    </div>
+
+    <!-- SECTION TITLE -->
+    <div class="section-header">
+      <h2 class="section-title">
+        STM Auditor List
+      </h2>
+      <div class="title-bar"></div>
+    </div>
+
+    <!-- CENTER CARD -->
+    <div class="viewer-center">
+      <div class="viewer-box">
+        <iframe src="https://drive.google.com/embeddedfolderview?id=10ZX4F5NTsOyVSfK3mlbv8opA0seJC-4b#list">
+        </iframe>
+      </div>
+    </div>
+
+  </div>
+
+  <style>
+    .viewer-wrapper {
+      display: flex;
+      flex-direction: column;
+      height: calc(100vh - 60px);
+      padding: 20px;
+      box-sizing: border-box;
+    }
+
+    /* HEADER */
+    .viewer-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+
+    .title {
+      font-weight: 700;
+      font-size: 1.1rem;
+      color: #1e293b;
+    }
+
+    /* PREMIUM BUTTON */
+    .open-btn {
+      text-decoration: none;
+      background: linear-gradient(135deg, #0d6efd, #3b82f6);
+      color: #fff;
+      padding: 6px 14px;
+      border-radius: 8px;
+      font-size: 0.85rem;
+      transition: 0.25s;
+      box-shadow: 0 4px 10px rgba(13, 110, 253, 0.25);
+    }
+
+    .open-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 18px rgba(13, 110, 253, 0.35);
+    }
+
+    /* SECTION HEADER */
+    .section-header {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    .section-title {
+      font-size: 1.4rem;
+      font-weight: 800;
+      color: #0f172a;
+      margin: 0;
+    }
+
+    .title-bar {
+      width: 50px;
+      height: 4px;
+      background: linear-gradient(90deg, #38bdf8, #0d6efd);
+      margin: 10px auto 0;
+      border-radius: 10px;
+    }
+
+    /* CENTER LAYOUT */
+    .viewer-center {
+      flex: 1;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+    }
+
+    /* PREMIUM CARD */
+    .viewer-box {
+      width: 100%;
+      max-width: 900px;
+      /*  smaller card */
+      height: 85%;
+      background: rgba(255, 255, 255, 0.85);
+      backdrop-filter: blur(10px);
+      border-radius: 16px;
+      box-shadow: 0 15px 40px rgba(0, 0, 0, 0.12);
+      overflow: hidden;
+      border: 1px solid rgba(255, 255, 255, 0.6);
+      transition: 0.3s;
+    }
+
+    /* HOVER EFFECT */
+    .viewer-box:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 25px 60px rgba(0, 0, 0, 0.18);
+    }
+
+    /* IFRAME */
+    .viewer-box iframe {
+      width: 100%;
+      height: 100%;
+      border: none;
+    }
+  </style>
+
+</body>
+
+</html>
