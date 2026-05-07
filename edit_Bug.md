@@ -31,3 +31,5 @@
 //ถามเพิ่มชื่อ url => https://script.google.com/ แก้ชื่อได้ไหม
 
 //ถามเพิ่มในนี้มีการนับ 1,000 Editor Loads ต่อเดือน เป็นโควต้าไหม ถ้ามีจะแก้ยังไง
+
+// https://script.google.com/macros/s/AKfycbyyIReQAt_OxRAElHLgw5iX1ES4aLvTkTz8699D0Oa2wwoPJzbdApd4SvjtvIdhw0dwzw/exec ลองดู
