@@ -1,3 +1,4 @@
+07-May-26
 แก้ไข 1
  ให้ปรับเพิ่มจาก session อันเดิมให้เพิ่มเวลาและชื่อนามสกุลจริงของลูกค้า(โดยชื่อนามสกุลจริงให้ลูกค้ากรอกเอง) และเปลี่ยนจากกดแท็บsessionเป็นการเพิ่มedit session ขึ้นมาเพื่อกดแทนการกดแท็บ
 
@@ -18,4 +19,8 @@
 
 แก้ไข 4
   เวลากดลบไฟล์บนหน้าเว็บแล้ว แต่ในDrivไม่ยอมลบให้
+
+07-May-2026
+แก้ 02 Audit Result ไม่มีการแสดงชื่อลูกค้าที่ดึงชื่อผู้ติดต่อมาจาก Customer_Real_Name จาก Data ในชีต 02_Audit Result ใน Google sheet 
+แก้ 01 Audit Schedule เอา year และ Customer Name ออก ให้เหลือแค่ Contact Person (Full Name) และ  Document Title 
 
