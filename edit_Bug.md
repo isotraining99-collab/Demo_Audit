@@ -22,5 +22,5 @@
 
 07-May-2026
 แก้ 01 Audit Schedule เอา year และ Customer Name ออก ให้เหลือแค่ Contact Person (Full Name) และ  Document Title บันทึกแล้วแต่อยากแก้ชื่อtitleเผื่อเขียนผิด สามารถเพิ่มสีในช่องตารางที่สร้างในไฟล์Docได้ 
-แก้ 02 Audit Result 1)ไม่มีการแสดงชื่อลูกค้าที่ดึงชื่อผู้ติดต่อมาจาก Customer_Real_Name จาก Data ในชีต 02_Audit Result ใน Google sheet 2)Edit detail ไม่ได้
+แก้ 02 Audit Result 1)ไม่มีการแสดงชื่อลูกค้าที่ดึงชื่อผู้ติดต่อมาจาก Customer_Real_Name จาก Data ในชีต 02_Audit Result ใน Google sheet 2)Edit detail ไม่ได้ 4)เพิ่มปีแล้ว เพิ่มDataบริษัทที่หนึ่งในปีนั้นแล้ว แต่ไม่ปุ่มให้เพิ่มบริษัทถัดไปในปีนั้นๆเพื่อความสะดวก
 ถามเพิ่ม https://script.google.com/ แก้ชื่อได้ไหม
