@@ -178,10 +178,10 @@ function saveCustomDocContent(auditId, htmlContent) {
         sheet.getRange(targetRow, statusColIdx + 1).setValue("Completed"); 
         
         SpreadsheetApp.flush();
-        return "บันทึกเรียบร้อยแล้ว!";
+        return "Saved Successfully";
       }
     }
-    throw new Error("หา ID: " + auditId + " ไม่เจอในระบบ");
+    throw new Error("We couldn't find a match for ID: " + auditId + " ");
   } catch (e) { 
     throw new Error(e.message); 
   }
