@@ -35,7 +35,7 @@ URL GoogleSheet = 1zUeF35TzE3l6pm45cMKclPGx0XGHNvaEE6xhAcPT5sw
 8) รูปแบบตรงตารางข้อมูลหน้าเว็ปเหมือนกับว่ามันตั้งชื่อและสามารถเพิ่มซ้อนลงไปอีกได้เรื่อยๆ เช่น เรา add ตัวที่ 1 และในตัวที่1 เรา add ย่อยไปได้อีกและทุกอันที่addไปมันสามารภAdd/editไฟล์ Doc ได้
 9) สามารถแชร์และexportไฟล์Docที่มีการฝังตัวไฟล์ในนั้นได้
 
-08-May-26
+08-May-26 ใช้ บัญชีบริษัท
 1) ใช้ URL Drive ใส่แล้วไฟล์ไม่ยอมโหลดลงไดร์ฟ แต่ลง google sheet แก้ยังไง (URL DRIVE = 1MTriHD_k4b5c3LOUHsvqKJY2nW6ArqxN)
 หน้า
 2) มันขึ้น Upload failed: You do have not to call DriveApp.getFolderByID พอเปิดสิทธิ์ได้ => มันขึ้นupload fail:Error:invalid argument =>แต่รูปเข้าไดร์ฟ
