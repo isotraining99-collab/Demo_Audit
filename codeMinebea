@@ -1,0 +1,248 @@
+var SHEET_ID = "17Q4V1y_uzrNSXyHDVM0TTd_mmHTyiodQJQ0lVDgxHT0"; 
+
+function doGet() { return HtmlService.createHtmlOutputFromFile('01.CustomerAudit'); }
+
+// ==========================================
+// 🌟 02 Audit Result
+// ==========================================
+function getAuditData() {
+  try {
+    var sheet = SpreadsheetApp.openById(SHEET_ID).getSheets()[0];
+    var data = sheet.getDataRange().getDisplayValues(); 
+    if (data.length <= 1) return []; data.shift(); return data;
+  } catch (e) { throw new Error(e.message); }
+}
+
+function createNewCustomerFolders(year, customerName, realName) {
+  try {
+    var sheet = SpreadsheetApp.openById(SHEET_ID).getSheets()[0];
+    var rawDate = new Date();
+    var timestampStr = Utilities.formatDate(rawDate, Session.getScriptTimeZone(), "dd/MM/yyyy HH:mm:ss");
+    var userEmail = Session.getActiveUser().getEmail() || "Unknown User"; 
+    var auditId = "AD-" + Utilities.formatDate(rawDate, Session.getScriptTimeZone(), "yyMMdd-HHmmss");
+    var docTypes = ["1. Plant Tour information", "2. Audit Time Table", "3. Audit Preparation Material", "4. Audit Report (Customer)", "5. Audit Report (Internal)"];
+    var dataToWrite = [];
+    for (var i = 0; i < docTypes.length; i++) { dataToWrite.push([timestampStr, year, customerName, auditId, docTypes[i], "", "", userEmail, realName, ""]); }
+    sheet.getRange(sheet.getLastRow() + 1, 1, dataToWrite.length, dataToWrite[0].length).setValues(dataToWrite);
+    SpreadsheetApp.flush();
+    return "Success: Audit Session [" + auditId + "] has been created.";
+  } catch (e) { throw new Error(e.message); }
+}
+
+function uploadFileToDrive(base64Data, fileName, year, customerName, auditId, docType, folderId, detail) {
+  try {
+    var folder = DriveApp.getFolderById(folderId);
+    var splitBase = base64Data.split(','); var type = splitBase[0].split(';')[0].replace('data:', '');
+    var blob = Utilities.newBlob(Utilities.base64Decode(splitBase[1]), type, fileName);
+    var fileUrl = folder.createFile(blob).getUrl();
+    var sheet = SpreadsheetApp.openById(SHEET_ID).getSheets()[0];
+    var data = sheet.getDataRange().getValues();
+    var timestampStr = Utilities.formatDate(new Date(), Session.getScriptTimeZone(), "dd/MM/yyyy HH:mm:ss");
+    var userEmail = Session.getActiveUser().getEmail() || "Unknown User";
+    var realName = ""; var emptyRowIndex = -1;
+    for (var i = 1; i < data.length; i++) {
+      if (data[i][3] == auditId && data[i][4] == docType) {
+        realName = data[i][8];
+        if (data[i][5] == "" && emptyRowIndex == -1) emptyRowIndex = i + 1;
+      }
+    }
+    if (emptyRowIndex != -1) {
+      sheet.getRange(emptyRowIndex, 1).setValue(timestampStr);
+      sheet.getRange(emptyRowIndex, 6).setValue(fileName);  
+      sheet.getRange(emptyRowIndex, 7).setValue(fileUrl); sheet.getRange(emptyRowIndex, 8).setValue(userEmail); sheet.getRange(emptyRowIndex, 10).setValue(detail); 
+    } else {
+      sheet.appendRow([timestampStr, year, customerName, auditId, docType, fileName, fileUrl, userEmail, realName, detail]);
+    }
+    SpreadsheetApp.flush(); return "Success: File uploaded and details saved.";
+  } catch (e) { throw new Error(e.message); }
+}
+
+function editFileDetail(auditId, docType, fileLink, newDetail) {
+  try {
+    var sheet = SpreadsheetApp.openById(SHEET_ID).getSheets()[0]; var data = sheet.getDataRange().getValues();
+    for (var i = 1; i < data.length; i++) { if (data[i][3] == auditId && data[i][4] == docType && data[i][6] == fileLink) { sheet.getRange(i + 1, 10).setValue(newDetail);
+    SpreadsheetApp.flush(); return "Success: Detail updated."; } }
+    throw new Error("File not found.");
+  } catch(e) { throw new Error(e.message); }
+}
+
+function removeFileFromSheet(auditId, docType, fileLink) {
+  try {
+    var sheet = SpreadsheetApp.openById(SHEET_ID).getSheets()[0];
+    var data = sheet.getDataRange().getValues();
+    var matchCount = 0; var targetRow = -1;
+    for (var i = 1; i < data.length; i++) { if (data[i][3] == auditId && data[i][4] == docType) { matchCount++;
+    if (data[i][6] == fileLink) targetRow = i + 1; } }
+    if (targetRow != -1) {
+      var fLink = sheet.getRange(targetRow, 7).getValue();
+      if (fLink) { var fileIdMatch = fLink.match(/[-\w]{25,}/); if (fileIdMatch) { try { DriveApp.getFileById(fileIdMatch[0]).setTrashed(true); } catch(e) {} } }
+      if (matchCount > 1) { sheet.deleteRow(targetRow); } else { sheet.getRange(targetRow, 6).clearContent();
+      sheet.getRange(targetRow, 7).clearContent(); sheet.getRange(targetRow, 10).clearContent(); }
+      SpreadsheetApp.flush(); return "Success: File removed from system and Drive.";
+    }
+  } catch(e) { throw new Error(e.message); }
+}
+
+function deleteAuditSession(auditId) {
+  try {
+    var sheet = SpreadsheetApp.openById(SHEET_ID).getSheets()[0];
+    var data = sheet.getDataRange().getValues();
+    for (var i = data.length - 1; i >= 1; i--) { if (data[i][3] == auditId) sheet.deleteRow(i + 1); }
+    SpreadsheetApp.flush(); return "Success: Session deleted.";
+  } catch(e) { throw new Error(e.message); }
+}
+
+function renameCustomerInSheet(oldName, newName) {
+  try {
+    var sheet = SpreadsheetApp.openById(SHEET_ID).getSheets()[0]; var data = sheet.getDataRange().getValues();
+    for (var i = 1; i < data.length; i++) { if (data[i][2] == oldName) sheet.getRange(i + 1, 3).setValue(newName); }
+    SpreadsheetApp.flush(); return "Success: Customer name updated.";
+  } catch(e) { throw new Error(e.message); }
+}
+
+// ==========================================
+// 🌟 01 Custom Audit (Tree Structure)
+// ==========================================
+
+function getCustomAuditData() {
+  try {
+    var sheet = SpreadsheetApp.openById(SHEET_ID).getSheetByName("01_CustomAudit");
+    if(!sheet) return [];
+    var data = sheet.getDataRange().getDisplayValues(); 
+    if (data.length <= 1) return []; data.shift(); return data;
+  } catch (e) { throw new Error(e.message); }
+}
+
+function createNewCustomSession(year, customerName, realName, docTitle, parentId) {
+  try {
+    var sheet = SpreadsheetApp.openById(SHEET_ID).getSheetByName("01_CustomAudit");
+    if(!sheet) throw new Error("Sheet '01_CustomAudit' not found!");
+    
+    var rawDate = new Date();
+    var timestampStr = Utilities.formatDate(rawDate, Session.getScriptTimeZone(), "dd/MM/yyyy HH:mm:ss");
+    var userEmail = Session.getActiveUser().getEmail() || "Unknown User"; 
+    var auditId = "CA-" + Utilities.formatDate(rawDate, Session.getScriptTimeZone(), "yyMMdd-HHmmss");
+    var pId = parentId || ""; // ถ้าไม่มีให้เป็นค่าว่าง
+    
+    sheet.appendRow([timestampStr, year, customerName, auditId, docTitle, "", userEmail, realName, "Draft", pId]);
+    SpreadsheetApp.flush(); return "Success: Document Session [" + auditId + "] created.";
+  } catch (e) { throw new Error(e.message); }
+}
+
+function renameCustomDocTitle(auditId, newTitle) {
+  try {
+    var sheet = SpreadsheetApp.openById(SHEET_ID).getSheetByName("01_CustomAudit");
+    var data = sheet.getDataRange().getValues();
+    for (var i = 1; i < data.length; i++) { 
+        if (data[i][3] == auditId) { 
+            sheet.getRange(i + 1, 5).setValue(newTitle); 
+            SpreadsheetApp.flush(); 
+            return "Success: Document title updated."; 
+        } 
+    }
+    throw new Error("Audit ID not found.");
+  } catch(e) { throw new Error(e.message); }
+}
+
+function saveCustomDocContent(auditId, htmlContent) {
+  try {
+    var sheet = SpreadsheetApp.openById(SHEET_ID).getSheetByName("01_CustomAudit");
+    var data = sheet.getDataRange().getValues(); // ดึงค่าดิบ
+    var headers = data[0];
+    
+    // ค้นหาว่าคอลัมน์ Audit_ID และ Content_HTML อยู่ที่ไหน (ป้องกันปัญหาคอลัมน์เคลื่อน)
+    var idColIdx = headers.indexOf("Audit_ID");
+    var contentColIdx = headers.indexOf("Content_HTML");
+    var timestampColIdx = headers.indexOf("Timestamp");
+    var editorColIdx = headers.indexOf("Editor");
+    var statusColIdx = headers.indexOf("Status");
+
+    if (idColIdx === -1) throw new Error("ไม่พบคอลัมน์ 'Audit_ID' ใน Sheets");
+
+    var timestampStr = Utilities.formatDate(new Date(), Session.getScriptTimeZone(), "dd/MM/yyyy HH:mm:ss");
+    var userEmail = Session.getActiveUser().getEmail() || "Unknown User";
+
+    // วนลูปหา ID ที่ตรงกัน (ใช้ .trim() เพื่อตัดช่องว่างที่อาจแฝงมา)
+    for (var i = 1; i < data.length; i++) {
+      if (String(data[i][idColIdx]).trim() === String(auditId).trim()) { 
+        var targetRow = i + 1;
+        
+        // ตรวจสอบขนาดของ HTML (ห้ามเกิน 50,000 ตัวอักษร)
+        if (htmlContent.length > 45000) {
+          throw new Error("เนื้อหาใหญ่เกินไป (มีรูป Base64 เยอะเกิน) กรุณาลบรูปเดิมออกแล้วใช้ปุ่มอัปโหลดรูปแทน");
+        }
+
+        sheet.getRange(targetRow, timestampColIdx + 1).setValue(timestampStr); 
+        sheet.getRange(targetRow, contentColIdx + 1).setValue(htmlContent); 
+        sheet.getRange(targetRow, editorColIdx + 1).setValue(userEmail); 
+        sheet.getRange(targetRow, statusColIdx + 1).setValue("Completed"); 
+        
+        SpreadsheetApp.flush();
+        return "บันทึกเรียบร้อยแล้ว!";
+      }
+    }
+    throw new Error("หา ID: " + auditId + " ไม่เจอในระบบ");
+  } catch (e) { 
+    throw new Error(e.message); 
+  }
+}
+
+function deleteCustomSession(auditId) {
+  try {
+    var sheet = SpreadsheetApp.openById(SHEET_ID).getSheetByName("01_CustomAudit");
+    var data = sheet.getDataRange().getValues();
+    var idsToDelete = [auditId];
+
+    // ค้นหาลูกและหลานทั้งหมดเพื่อลบทิ้งด้วย
+    function findChildren(id) {
+      for (var i = 1; i < data.length; i++) {
+        if (data[i][9] == id) { 
+          idsToDelete.push(data[i][3]); 
+          findChildren(data[i][3]);     
+        }
+      }
+    }
+    findChildren(auditId);
+
+    // ลบจากแถวล่างสุดขึ้นบน
+    for (var i = data.length - 1; i >= 1; i--) {
+      if (idsToDelete.indexOf(data[i][3]) !== -1) {
+        sheet.deleteRow(i + 1);
+      }
+    }
+    SpreadsheetApp.flush(); return "Success: Document and sub-documents deleted.";
+  } catch(e) { throw new Error(e.message); }
+}
+
+
+// ==========================================
+// 🌟 ฟังก์ชันพิเศษสำหรับรับไฟล์จากหน้า Word (TinyMCE)
+// ==========================================
+function uploadMediaToDrive(base64Data, fileName, isImage) {
+  try {
+    var folderId = "11eTo7X-xeLe7WGnPOyNnF4_DS8qNkPbf";
+    var folder = DriveApp.getFolderById(folderId);
+    
+    var splitBase = base64Data.split(',');
+    var type = splitBase[0].split(';')[0].replace('data:', '');
+    var blob = Utilities.newBlob(Utilities.base64Decode(splitBase[1]), type, fileName);
+    var file = folder.createFile(blob);
+    
+    // 🌟 แก้ไข: ใช้ Try-Catch หุ้มไว้ และเปลี่ยนเป็นแชร์แค่ระดับองค์กร (DOMAIN_WITH_LINK)
+    // เพื่อไม่ให้ขัดกับ IT Policy ของบริษัท และป้องกัน Error ค้าง
+    try {
+      file.setSharing(DriveApp.Access.DOMAIN_WITH_LINK, DriveApp.Permission.VIEW);
+    } catch(sharingError) {
+      // ถ้าตั้งค่าแชร์ไม่ได้ให้ปล่อยผ่านไปเลย เพราะไฟล์จะได้รับสิทธิ์การมองเห็น
+      // ตามสิทธิ์ของโฟลเดอร์ 1MTriHD_k4b5c3LOUHsvqKJY2nW6ArqxN อัตโนมัติอยู่แล้ว
+    }
+    
+    if (isImage) {
+      return "https://drive.google.com/thumbnail?id=" + file.getId() + "&sz=w1000";
+    } else {
+      return file.getUrl();
+    }
+  } catch (e) {
+    throw new Error(e.message);
+  }
+}
