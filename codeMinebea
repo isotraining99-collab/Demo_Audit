@@ -1,6 +1,10 @@
 var SHEET_ID = "17Q4V1y_uzrNSXyHDVM0TTd_mmHTyiodQJQ0lVDgxHT0"; 
 
-function doGet() { return HtmlService.createHtmlOutputFromFile('01.CustomerAudit'); }
+function doGet() { 
+  var output = HtmlService.createHtmlOutputFromFile('01.CustomerAudit'); 
+  output.setXFrameOptionsMode(HtmlService.XFrameOptionsMode.ALLOWALL); 
+  return output;
+}
 
 // ==========================================
 // 🌟 02 Audit Result
