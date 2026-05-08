@@ -39,7 +39,7 @@ URL GoogleSheet = 1zUeF35TzE3l6pm45cMKclPGx0XGHNvaEE6xhAcPT5sw
 1) ใช้ URL Drive ใส่แล้วไฟล์ไม่ยอมโหลดลงไดร์ฟ แต่ลง google sheet แก้ยังไง (URL DRIVE = 1MTriHD_k4b5c3LOUHsvqKJY2nW6ArqxN)
 หน้า
 2) มันขึ้น Upload failed: You do have not to call DriveApp.getFolderByID พอเปิดสิทธิ์ได้ => มันขึ้นupload fail:Error:invalid argument =>แต่รูปเข้าไดร์ฟ
-3) กดย้อนกลับบน Doc คนละ session ID อีกตัวที่มายังไม่ได้เขียนอะไร แต่พอกด ctrl Z มันย่อนไปหาหน้าที่ทำก่อนนี้
+3) กดย้อนกลับบน Doc คนละ session ID อีกตัวที่มายังไม่ได้เขียนอะไร แต่พอกด ctrl Z เนื้อหามันแสดงหน้าที่ทำก่อนนี้
  
 03 CB material ทำเหมือน
 
