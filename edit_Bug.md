@@ -40,6 +40,7 @@ URL GoogleSheet = 1zUeF35TzE3l6pm45cMKclPGx0XGHNvaEE6xhAcPT5sw
 หน้า
 2) มันขึ้น Upload failed: You do have not to call DriveApp.getFolderByID พอเปิดสิทธิ์ได้ => มันขึ้นupload fail:Error:invalid argument =>แต่รูปเข้าไดร์ฟ
 3) กดย้อนกลับบน Doc คนละ session ID อีกตัวที่มายังไม่ได้เขียนอะไร แต่พอกด ctrl Z เนื้อหามันแสดงหน้าที่ทำก่อนนี้
+4) สมมติเพิ่มมา3คอลัม ผมเขียนข้อความยาวๆลงมาทำให้คอลัมยาวขึ้น ถูกต้อง แต่พอไปพิมพ์อีกคอลัมที่ว่างมันให้เริ่มที่กลางๆไม่ให้เริ่มที่บน
  
 03 CB material ทำเหมือน
 
